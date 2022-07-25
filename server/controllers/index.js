@@ -1,0 +1,1 @@
+exports.shortener = require('./shortener');
