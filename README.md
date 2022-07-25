@@ -1,2 +1,2 @@
 # minifymy.link
-A URL shortener 
+A URL shortener microservice
