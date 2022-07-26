@@ -2,34 +2,32 @@ import axios from 'axios';
 import { useState } from 'react';
 
 const URL = import.meta.env.VITE_URL;
+console.log(URL, 'URL');
 
 const App = () => {
-  const headers = {'Content-Type': 'application/json'}
+
 
   const [inputUrl, setUrl] = useState('');
+  const [shortenedUrl, setShortenedUrl] = useState('');
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    console.log('inputUrl', inputUrl);
+    e.preventDefault();
+    const config = { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', } };
+    const data = { url: inputUrl };
 
-    const options = {
-      method: 'POST',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      data: JSON.stringify({ url: inputUrl }),
-      url: URL,
-    };
-
-    axios(options)
-      .then(res => console.log(res.data))
-      .catch(err => console.error(err));
+    axios.post(URL, data, config)
+      .then(res => setShortenedUrl(res.data.shortened_url))
+      .catch(err => console.log(err));
   }
 
   return (
     <div className="App">
       <input
         onChange={(e) => setUrl(e.target.value)}
-        onClick={() => handleSubmit(inputUrl)}
         defaultValue={inputUrl}
         placeholder="URL"/>
-      <button>Shorten</button>
+      <button onClick={(e) => handleSubmit(e)}>Shorten</button>
     </div>
   )
 }

@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const db = require('./index');
+mongoose.Promise = global.Promise;
 
 const urlSchema = new mongoose.Schema({
   original_url: {
@@ -11,8 +13,4 @@ const urlSchema = new mongoose.Schema({
   }
 });
 
-const URL = mongoose.model("URL", urlSchema);
-
-module.exports = {
-  URL: URL,
-}
+module.exports.Record = mongoose.model("URL", urlSchema);

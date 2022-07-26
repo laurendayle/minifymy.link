@@ -1,7 +1,6 @@
-require('dotenv').config();
 
 const mongoose = require('mongoose');
-const uri = process.env.MONGO_URI || 'mongodb+srv://ldanders:laplaya15@urlshortener.rftvzgu.mongodb.net/test';
+const uri = process.env['MONGO_URI'];
 
 mongoose.connect(uri, {
   useNewUrlParser: true,
@@ -15,4 +14,4 @@ db.once('open', () => {
   console.log('Successfully connected to MongoDB');
 });
 
-module.exports = db;
+module.exports.db = db;

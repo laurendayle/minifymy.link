@@ -2,9 +2,21 @@
   "name": "minifymy.link",
   "version": "1.0.0",
   "description": "A URL shortener",
-  "main": "index.js",
+  "main": "server.js",
+  "engines": {
+    "node": ">= 6.13.0"
+  },
+  "configurations": [
+    {
+      "name": "node: server",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "doppler",
+      "runtimeArgs": ["run", "--", "npm","start"]
+    }
+  ],
   "scripts": {
-    "server-dev": "NODE_ENV=development npx nodemon ./server/server.js",
+    "server-dev": "NODE_ENV=development npx nodemon ./server.js --trace-warnings",
     "test": "test"
   },
   "repository": {
@@ -25,12 +37,13 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "eslint": "^8.20.0",
+    "eslint-plugin-import": "^2.26.0",
     "express": "^4.18.1",
     "helmet": "^5.1.1",
     "mongodb": "^4.8.0",
     "mongoose": "^6.4.6",
     "morgan": "^1.10.0",
-    "nanoid": "^4.0.0",
+    "nanoid": "3.3.4",
     "nodemon": "^2.0.19",
     "valid-url": "^1.0.9"
   }
