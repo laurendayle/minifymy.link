@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const URL = import.meta.env.VITE_URL;
 
@@ -20,6 +21,10 @@ const App = () => {
 
   return (
     <div className="App">
+      <nav>
+        <Link to="login">Login</Link>
+        <Link to="signup">Sign Up</Link>
+      </nav>
       <input
         onChange={(e) => setUrl(e.target.value)}
         defaultValue={inputUrl}
