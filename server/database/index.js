@@ -8,10 +8,17 @@ mongoose.connect(uri, {
   serverSelectionTimeoutMS: 5000,
 });
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error: '));
-db.once('open', () => {
-  console.log('Successfully connected to MongoDB');
-});
-
-module.exports.db = db;
+const connect = async () => {
+  try {
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+    });
+    console.log('Successfully connected to MongoDB');
+  } catch (err) {
+    console.error(err.message);
+    process.exit(1);
+  }
+}
+module.exports.connect = connect;
