@@ -1,4 +1,4 @@
-const Record = require('../database/Record.js').Record;
+const Record = require('../database/Url.js').Record;
 const db = require('../database/index');
 
 module.exports = {

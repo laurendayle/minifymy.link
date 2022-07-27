@@ -1,5 +1,5 @@
 
-const { insertNew, getOriginalUrl } = require('../models/shortener');
+const Model = require('../models/index').Url;
 const { getUrlKey } = require('../utils/urlKey');
 const { validateUrl } = require('../utils/validateUrl');
 
@@ -12,7 +12,7 @@ module.exports = {
             urlKey = getUrlKey(original_url),
             shortened_url = base + urlKey;
 
-      const document = insertNew({
+      const document = Model.insertNew({
         url_id: urlKey,
         original_url: original_url,
         shortened_url: shortened_url,
@@ -26,7 +26,7 @@ module.exports = {
   },
   getShortenedUrl: (req, res) => {
     const { short_url } = req.params;
-    const document = getOriginalUrl(short_url)
+    const document = Model.getOriginalUrl(short_url)
       .then((originalUrl) => res.redirect(302, 'http://' + originalUrl))
       .catch((err) => res.status(404).send(err));
   }

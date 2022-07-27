@@ -14,7 +14,7 @@ const App = () => {
     const config = { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', } };
     const data = { url: inputUrl };
 
-    axios.post(URL, data, config)
+    axios.post(URL + '/shortenurl/new', data, config)
       .then(res => setShortenedUrl(res.data.shortened_url))
       .catch(err => console.log(err));
   }

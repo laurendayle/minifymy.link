@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const db = require('./index');
-mongoose.Promise = global.Promise;
 
 const urlSchema = new mongoose.Schema({
   url_id: {
