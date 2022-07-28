@@ -9,7 +9,7 @@ router.get('/shortenurl/:short_url', controller.Shortener.getShortenedUrl);
 // User routes
 router.post('/signup', controller.User.signup);
 router.post('/login', passport.authenticate('local', { failureRedirect: '/?error=LoginError', failureFlash: true }), controller.User.login);
-router.get('/user', controller.User.authenticate);
+router.get('/profile', passport.authenticate('jwt', { session: false }, controller.User.authenticate));
 router.get('/logout', controller.User.logout);
 
 module.exports = router;

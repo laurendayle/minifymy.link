@@ -11,6 +11,7 @@ module.exports = {
       if (!document) {
         res.status(500).send(new Error('Error registering the user'));
       } else {
+        console.log('document', document);
         res.status(200).send(document);
       }
     } catch (err) {

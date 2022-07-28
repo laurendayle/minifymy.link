@@ -24,6 +24,16 @@ const UserSchema = new Schema({
     type: String,
     default: "local",
   },
+  refreshToken: {
+    type: [Session],
+  },
+});
+
+User.set("toJSON", {
+  transform: (doc, ret, options) => {
+    delete ret.refreshToken;
+    return ret;
+  },
 });
 
 const options = {
@@ -46,7 +56,7 @@ exports.createNewUser = async (userObj) => {
       await user.save();
 
       const { newUser } = await User.authenticate()(user, userObj.password);
-      console.log(newUser, 'newUser');
+      console.log(newUser, "newUser");
       return newUser;
     } catch (err) {
       return err;

@@ -11,8 +11,6 @@ const Login = () => {
   const [userData, setUserData] = useState({});
   const [shouldRedirect, setRedirect] = useState(false);
 
-  console.log(shouldRedirect, 'shouldRedirect');
-
   const handleInputChange = (e) => {
     const newState = {...userData};
     newState[e.target.name] = e.target.value;
