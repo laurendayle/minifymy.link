@@ -22,8 +22,8 @@ const App = () => {
   return (
     <div className="App">
       <nav>
-        <Link to="login">Login</Link>
-        <Link to="signup">Sign Up</Link>
+        <Link to="/login">Login</Link>
+        <Link to="/signup">Sign Up</Link>
       </nav>
       <input
         onChange={(e) => setUrl(e.target.value)}

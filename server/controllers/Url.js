@@ -1,5 +1,5 @@
 
-const Model = require('../models/index').Url;
+const Model = require('../models/Url').Url;
 const { getUrlKey } = require('../utils/urlKey');
 const { validateUrl } = require('../utils/validateUrl');
 
