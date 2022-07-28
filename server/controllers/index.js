@@ -1,1 +1,2 @@
-exports.shortener = require('./shortener');
+exports.Shortener = require('./Url');
+exports.User = require('./User');

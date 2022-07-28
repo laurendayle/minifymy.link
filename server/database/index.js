@@ -1,7 +1,9 @@
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 const mongoose = require('mongoose');
-const uri = process.env.MONGO_URI || 'mongodb+srv://ldanders:laplaya15@urlshortener.rftvzgu.mongodb.net/test';
+const uri = process.env.MONGO_URI;
 
 mongoose.connect(uri, {
   useNewUrlParser: true,
@@ -9,10 +11,17 @@ mongoose.connect(uri, {
   serverSelectionTimeoutMS: 5000,
 });
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error: '));
-db.once('open', () => {
-  console.log('Successfully connected to MongoDB');
-});
-
-module.exports = db;
+const connect = async () => {
+  try {
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+    });
+    console.log('Successfully connected to MongoDB');
+  } catch (err) {
+    console.error(err.message);
+    process.exit(1);
+  }
+}
+module.exports.connect = connect;
