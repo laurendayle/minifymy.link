@@ -4,10 +4,10 @@ import styled from "styled-components";
 import { Navigate } from 'react-router';
 
 const URL = import.meta.env.VITE_URL;
-
+const config = import.meta.env.VITE_AXIOS_CONFIG;
 const SignUp = () => {
   const [userData, setUserData] = useState({});
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [shouldRedirect, setRedirect] = useState(false);
 
   const handleInputChange = (e) => {
@@ -20,14 +20,8 @@ const SignUp = () => {
     if (userData.password !== userData.verifyPassword) {
       setError("Please ensure the passwords match");
     } else {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      };
       axios
-        .post(URL + "/signup", userData, config)
+        .post(URL + "/user/signup", userData, config)
         .then((res) => {
           if (res.data) {
             setRedirect(true);
@@ -46,15 +40,9 @@ const SignUp = () => {
         required
       />
       <input
-        name="firstName"
-        placeholder="First Name"
-        aria-label="Your First Name"
-        required
-      />
-      <input
-        name="lastName"
-        placeholder="Last Name"
-        aria-label="Your Last Name"
+        name="fullName"
+        placeholder="Full Name"
+        aria-label="Your First and Last Name"
         required
       />
       <input
@@ -75,7 +63,7 @@ const SignUp = () => {
         <div>{error}</div>
       )}
 
-      {shouldRedirect && <Navigate replace to="/user" />}
+      {shouldRedirect && <Navigate replace to="/user/dashboard" />}
     </Container>
   );
 };

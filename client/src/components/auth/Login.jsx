@@ -9,6 +9,7 @@ const config = import.meta.env.VITE_AXIOS_CONFIG;
 const Login = () => {
 
   const [userData, setUserData] = useState({});
+  const [error, setError] = useState(null);
   const [shouldRedirect, setRedirect] = useState(false);
 
   const handleInputChange = (e) => {
@@ -18,7 +19,7 @@ const Login = () => {
   }
 
   const handleLogin = (e) => {
-    axios.post(url + '/login', userData, config)
+    axios.post(url + '/user/login', userData, config)
       .then((session) => {
         if (session.data.cookie) {
           setRedirect(true);
@@ -32,6 +33,7 @@ const Login = () => {
       <input name="email" placeholder="Email" aria-label="Your email" required/>
       <input name="password" placeholder="Password" aria-label="Your password" required/>
       <button onClick={(e) => handleLogin(e)}>Login</button>
+      {error && <div>{error}</div>}
       {shouldRedirect && <Navigate replace to="/user" />}
     </Container>
   )
