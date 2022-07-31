@@ -22,7 +22,7 @@
   ],
   "scripts": {
     "server-dev": "NODE_ENV=development npx nodemon ./server.js --trace-warnings",
-    "test": "test"
+    "test": "jest --detectOpenHandles --watch"
   },
   "repository": {
     "type": "git",
@@ -48,8 +48,10 @@
     "express": "^4.18.1",
     "express-session": "^1.17.3",
     "helmet": "^5.1.1",
+    "jest": "^28.1.3",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.8.0",
+    "mongodb-memory-server": "^8.8.0",
     "mongoose": "^6.4.6",
     "morgan": "^1.10.0",
     "nanoid": "3.3.4",
