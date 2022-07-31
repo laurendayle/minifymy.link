@@ -1,18 +1,19 @@
 const mongoose = require("mongoose");
-const passportLocalMongoose = require("passport-local-mongoose");
-const Session = require("./Session");
+const bcrypt = require("bcryptjs");
+const { createSession } = require("./Session");
 const { validatePassword } = require("../utils/validatePassword");
 
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-  firstName: {
+  fullName: {
     type: String,
     default: "",
   },
-  lastName: {
+  hash: {
     type: String,
     default: "",
+    required: true,
   },
   email: {
     type: String,
@@ -20,50 +21,73 @@ const UserSchema = new Schema({
     required: true,
     unique: true,
   },
-  authStrategy: {
-    type: String,
-    default: "local",
-  },
-  refreshToken: {
-    type: [Session],
-  },
 });
-
-User.set("toJSON", {
-  transform: (doc, ret, options) => {
-    delete ret.refreshToken;
-    return ret;
-  },
-});
-
-const options = {
-  usernameField: "email",
-  usernameCaseInsensitive: true,
-};
-UserSchema.plugin(passportLocalMongoose, options);
 
 const User = mongoose.model("User", UserSchema);
 
-exports.createNewUser = async (userObj) => {
-  if (validatePassword(userObj)) {
+module.exports = {
+  // LINK server/controllers/User.js:8
+  // LINK client/src/components/auth/SignUp.jsx:
+  createNewUser: async (userObj) => {
     try {
-      const user = new User({ username: userObj.email });
-
-      user.firstName = userObj.firstName;
-      user.lastName = userObj.lastName;
-      user.email = userObj.email;
-      await user.setPassword(userObj.password);
+      const user = await new User(userObj);
       await user.save();
+      const cookie = await createSession(user);
 
-      const { newUser } = await User.authenticate()(user, userObj.password);
-      console.log(newUser, "newUser");
-      return newUser;
+      return {
+        user: user.email,
+        message: "Account creation successful",
+        authenticated: true,
+        session: cookie,
+      };
     } catch (err) {
-      return err;
+      return {
+        user: user.email,
+        message: "Error creating account" + err,
+        authenticated: false,
+        session: null,
+      }
     }
-  } else {
-    return new Error("Passwords do not match");
-  }
-};
+  },
+  // LINK server/controllers/User.js:24
+  // LINK client/src/components/auth/Login.jsx:25
+  login: async (userObj) => {
+    try {
+      const user = await User.findOne({ where: { email: userObj.email } });
+      if (!user) {
+        return {
+          user: userObj.email,
+          message: "No user exists with that email",
+          authenticated: false,
+          session: null,
+        };
+      }
 
-exports.User = User;
+      if (await bcrypt.compare(userObj.password, user.hash)) {
+        const cookie = await createSession(user);
+        console.log(cookie, "cookie");
+        return {
+          user: user.email,
+          message: "Authentication successful",
+          authenticated: true,
+          session: cookie,
+        };
+      } else {
+        return {
+          user: userObj.email,
+          message: "Incorrect password",
+          authenticated: false,
+          session: null,
+        };
+      }
+    } catch (err) {
+      return {
+        user: user.email,
+        message: "An error occured during authentication: " + err,
+        authenticated: false,
+        session: null,
+      }
+    }
+  },
+  User: User,
+};

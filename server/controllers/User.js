@@ -1,50 +1,66 @@
-// const Model = require('../models/index').User;
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const Model = require('../models/User');
-const User = Model.User;
+const Session = require("../models/Session");
+const bcrypt = require("bcryptjs");
+const Model = require("../models/User");
+// const User = Model.User;
 
 module.exports = {
-  signup: async (req, res) => {
+  // LINK server/models/User.js:29
+  // LINK client/src/components/auth/SignUp.jsx:26
+  register: async (req, res) => {
     try {
-      const document = await Model.createNewUser(req.body);
-      if (!document) {
-        res.status(500).send(new Error('Error registering the user'));
+      console.log('req.body', req.body);
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const user = await Model.createNewUser({
+        fullName: req.body.fullName,
+        email: req.body.email,
+        hash: hashedPassword,
+      });
+      delete user["hash"];
+      res.cookie("minifymy.link", user.session.token);
+      console.log(res.cookie(), 'res.cookie');
+      res.status(200).send(user);
+    } catch (err) {
+      console.log('err in register handler', err);
+      res.status(500).send(err);
+    }
+  },
+  // LINK server/models/User.js:51
+  // LINK client/src/components/auth/Login.jsx:25
+  login: async (req, res) => {
+    console.log(req);
+    try {
+      const userData = await Model.login({
+        email: req.body.email,
+        password: req.body.password,
+      });
+      console.log(userData, 'userData');
+      if (userData.authenticated) {
+        res.cookie("minifymy.link", userData.session).status(200).send(userData);
       } else {
-        console.log('document', document);
-        res.status(200).send(document);
+        res.status(404).send(userData);
       }
     } catch (err) {
       res.status(500).send(err);
     }
   },
-  login: async (req, res) => {
-    try {
-      await req.session.save();
-      return res.status(200).send(req.session);
-    } catch (err) {
-      return res.status(500).send({ error: err.message });
-    }
-  },
-  authenticate: (req, res) => {
-    if (req.user) {
-      return res.status(200).send({
-        user: req.user,
-        authenticated: true,
-      })
-    } else {
-      return res.status(401).send({
-        error: 'User is not authenticated',
-        authenticated: false,
-      })
-    }
-  },
-  logout: (req, res) => {
-    req.logout();
-    req.session.save((err) => {
-      if (err) res.status(500).send(err);
-      req.session.destroy();
-      res.status(200).send('OK'); // redirect to / ?
+  logout: async (req, res) => {
+    res.clearCookie("minifymy.link");
+    const cookies = req.headers.cookie.split(";");
+    let cookieValue = null;
+    cookies.forEach(element => {
+      if (element.split("=")[0].trim() === "minifymy.link") {
+        cookieValue = decodeURIComponent(element.split("=")[1].trim());
+      }
     })
-  }
-}
+
+    try {
+      const document = await Session.destroySession({ where: { session: cookieValue }});
+      if (!document) {
+        res.status(500).send(err);
+      }
+      res.status(200).send(document);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  },
+};

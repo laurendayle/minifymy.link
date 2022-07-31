@@ -1,27 +1,42 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
-
-const passportLocalMongoose = require("passport-local-mongoose");
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 const SessionSchema = new Schema({
-  refreshToken: {
+  token: {
     type: String,
     default: "",
   },
 });
 
-exports.Session = mongoose.model("Session", SessionSchema);
+const Session = mongoose.model("Session", SessionSchema);
 
-exports.authenticate = async (cookie) => {
-  try {
-    const user = await Session.findOne(cookie.id);
+module.exports = {
+  Session: Session,
+  createSession: async (userObj) => {
+    try {
+      let cookie = await bcrypt.hash(process.env.SECRET, 10);
+      const newSession = await Session.findOneAndUpdate(
+        { _id: userObj._id },
+        { token: cookie },
+        { upsert: true, new: true }
+      );
 
-    if (user) {
-      return user;
-    } else {
-      return new Error('No active session');
+      return newSession;
+    } catch (err) {
+      return err;
     }
-  } catch (err) {
-    return err;
+  },
+  destroySession: async (cookie) => {
+    try {
+      const document = await Session.findOneAndDelete({ session: cookie });
+      console.log(document);
+      return document;
+    } catch (err) {
+      return err;
+    }
   }
-}
+};
