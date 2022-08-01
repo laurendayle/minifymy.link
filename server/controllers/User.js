@@ -8,32 +8,30 @@ module.exports = {
   // LINK client/src/components/auth/SignUp.jsx:26
   register: async (req, res) => {
     try {
-      console.log('req.body', req.body);
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const user = await Model.createNewUser({
         fullName: req.body.fullName,
         email: req.body.email,
         hash: hashedPassword,
       });
-      delete user["hash"];
       res.cookie("minifymy.link", user.session.token);
-      console.log(res.cookie(), 'res.cookie');
       res.status(200).send(user);
     } catch (err) {
-      console.log('err in register handler', err);
       res.status(500).send(err);
     }
   },
   // LINK server/models/User.js:51
   // LINK client/src/components/auth/Login.jsx:25
   login: async (req, res) => {
-    console.log(req);
+    console.log(req.get('Authorization'), atob('Omxh'), 'req.get');
+    let userData = atob(req.get("Authorization").slice(6)).split(":");
+    const [ email, password ] = userData;
+    console.log('email', email, 'password', password);
     try {
       const userData = await Model.login({
-        email: req.body.email,
-        password: req.body.password,
+        email: email,
+        password: password,
       });
-      console.log(userData, 'userData');
       if (userData.authenticated) {
         res.cookie("minifymy.link", userData.session).status(200).send(userData);
       } else {

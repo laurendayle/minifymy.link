@@ -30,10 +30,9 @@ module.exports = {
   // LINK client/src/components/auth/SignUp.jsx:
   createNewUser: async (userObj) => {
     try {
-      const user = await new User(userObj);
+      const user = new User(userObj);
       await user.save();
       const cookie = await createSession(user);
-
       return {
         user: user.email,
         message: "Account creation successful",
@@ -42,18 +41,20 @@ module.exports = {
       };
     } catch (err) {
       return {
-        user: user.email,
+        user: userObj.email,
         message: "Error creating account" + err,
         authenticated: false,
         session: null,
-      }
+      };
     }
   },
   // LINK server/controllers/User.js:24
   // LINK client/src/components/auth/Login.jsx:25
   login: async (userObj) => {
+    console.log(userObj, 'userObj');
     try {
-      const user = await User.findOne({ where: { email: userObj.email } });
+      const user = await User.findOne({ email: userObj.email });
+      console.log(user, 'user');
       if (!user) {
         return {
           user: userObj.email,
@@ -83,10 +84,10 @@ module.exports = {
     } catch (err) {
       return {
         user: user.email,
-        message: "An error occured during authentication: " + err,
+        message: "An error occured during login: " + err,
         authenticated: false,
         session: null,
-      }
+      };
     }
   },
   User: User,

@@ -18,7 +18,7 @@ const connectDB = require("./database/index").connect;
 connectDB();
 
 const corsOptions = {
-  origin: "http://127.0.0.1:5173/",
+  origin: process.env.CLIENT,
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
