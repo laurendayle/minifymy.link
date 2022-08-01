@@ -1,24 +1,34 @@
-const Model = require("../models/Url").Url;
+const Model = require("../models/Url");
 const { getUrlKey } = require("../utils/urlKey");
 const { validateUrl } = require("../utils/validateUrl");
 
-const base = process.env["base"];
+const base = process.env.base;
+console.log(base);
 
 module.exports = {
-  createShortenedUrl: (req, res) => {
+  createShortenedUrl: async (req, res) => {
     if (validateUrl(req.body.url)) {
       const original_url = req.body.url,
         urlKey = getUrlKey(original_url),
-        shortened_url = base + urlKey;
+        shortened_url = `${base}${urlKey}`;
 
-      const document = Model.insertNew({
-        url_id: urlKey,
-        original_url: original_url,
-        shortened_url: shortened_url,
-        date: new Date(),
-      })
-        .then((savedDoc) => res.status(200).send(savedDoc))
-        .catch((err) => res.status(404).send(err));
+      try {
+        const savedDoc = await Model.createNew({
+          url_id: urlKey,
+          title: req.body.title || "",
+          original_url: original_url,
+          shortened_url: shortened_url,
+          date: new Date(),
+        });
+        if (savedDoc) {
+          res.status(200).send(savedDoc);
+        } else {
+          res.status(500).send({ message: "Something went wrong, try again" });
+        }
+
+      } catch (err) {
+        res.status(404).send(err);
+      }
     } else {
       res.status(400).send("Invalid URL");
     }

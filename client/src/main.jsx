@@ -10,7 +10,6 @@ import SignOut from "./components/auth/SignOut";
 import "./components/styles/index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
     <RecoilRoot>
       <BrowserRouter>
         <Routes>
@@ -22,5 +21,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </Routes>
       </BrowserRouter>
     </RecoilRoot>
-  </React.StrictMode>
 );

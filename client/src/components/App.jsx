@@ -1,46 +1,48 @@
-import axios from 'axios';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import sessionAtom from "../recoil/atoms/sessionAtom";
+import ShortenURL from "./ShortenURL";
+import SignOut from "./auth/SignOut";
 
 const URL = import.meta.env.VITE_URL;
 const config = import.meta.env.VITE_AXIOS_CONFIG;
 
 const App = () => {
+  const navigate = useNavigate();
 
-  const [inputUrl, setUrl] = useState('');
-  const [shortenedUrl, setShortenedUrl] = useState('');
   const [session, setSession] = useRecoilState(sessionAtom);
   const [error, setError] = useState(null);
 
-  console.log(session, 'session');
-
-  const handleSubmit = (e) => {
-    axios.post(URL + '/shortenurl/new', data, config)
-      .then(res => setShortenedUrl(res.data.shortened_url))
-      .catch(err => setError(err));
-  }
-
   return (
-    <div className="App">
+    <>
       <StyledNav>
-        <StyledLink to="/user/login">Login</StyledLink>
-        <StyledLink to="/user/signup">Sign Up</StyledLink>
-        <StyledLink to="/user/logout">Sign Out</StyledLink>
+        { session ? <SignOut /> : (
+          <>
+            <StyledLink to="/user/login">Login</StyledLink>
+            <StyledLink to="/user/signup">Sign Up</StyledLink>
+          </>
+        )}
+
       </StyledNav>
-      <input
-        onChange={(e) => setUrl(e.target.value)}
-        defaultValue={inputUrl}
-        placeholder="URL"/>
-      <button onClick={(e) => handleSubmit(e)}>Shorten</button>
 
-      {error && <div>{error}</div>}
-    </div>
-  )
-}
-
+      <Container className="App">
+        <ShortenURL />
+      </Container>
+    </>
+  );
+};
+const Container = styled.div`
+  background-color: tan;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+`;
 const StyledNav = styled.nav`
   width: 100%;
   display: flex;
@@ -50,6 +52,7 @@ const StyledNav = styled.nav`
 const StyledLink = styled(Link)`
   margin: 5px;
   text-decoration: none;
+  color: #909090;
 `;
 
 export default App;

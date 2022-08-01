@@ -38,5 +38,13 @@ module.exports = {
     } catch (err) {
       return err;
     }
+  },
+  getSession: async (token) => {
+    try {
+      const user = await Session.findOne({session: token});
+      return user;
+    } catch (err) {
+      return err;
+    }
   }
 };

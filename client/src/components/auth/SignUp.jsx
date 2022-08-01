@@ -1,21 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { Navigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useRecoilState } from "recoil";
 import sessionAtom from "../../recoil/atoms/sessionAtom";
 import { Input, Button, Icon } from "semantic-ui-react";
 
 const URL = import.meta.env.VITE_URL;
 const config = import.meta.env.VITE_AXIOS_CONFIG;
+
 const inputStyle = { margin: "7px" };
-const buttonStyle = { color: "#909090", border: "1px solid#909090", backgroundColor: "transparent" };
+const buttonStyle = {
+  color: "#909090",
+  border: "1px solid#909090",
+  backgroundColor: "transparent",
+};
 
 const SignUp = () => {
+  const navigate = useNavigate();
+
   const [userData, setUserData] = useState({});
   const [error, setError] = useState(null);
   const [session, setSession] = useRecoilState(sessionAtom);
   const [shouldRedirect, setRedirect] = useState(false);
+
+  useEffect(() => {
+    console.log(session, 'session');
+    console.log(error);
+  });
 
   const handleInputChange = (e) => {
     const newState = { ...userData };
@@ -25,17 +37,28 @@ const SignUp = () => {
 
   const handleSignUp = (e) => {
     if (userData.password !== userData.verifyPassword) {
-      setError("Please ensure the passwords match");
+      setError({ message: "Please ensure the passwords match" });
     } else {
-      axios
-        .post(URL + "/user/signup", userData, config)
+      axios({
+        method: "post",
+        data: userData,
+        headers: { config },
+        url: `${URL}/user/signup`,
+      })
         .then((res) => {
           if (res.data.authenticated) {
-            console.log(res.data);
-            setSession(res.data);
+            window.localStorage.setItem("minifymylink", res.data.session.token);
+            setSession(res.data.session.token);
+            navigate("/user/profile");
           }
         })
-        .catch((err) => setError(err));
+        .catch((err) => {
+          if (err.message) {
+            setError(err.message);
+          } else {
+            setError("Unknown error");
+          }
+        });
     }
   };
 
@@ -50,6 +73,7 @@ const SignUp = () => {
               icon="at"
               iconPosition="left"
               name="email"
+              type="email"
               placeholder="Email"
               aria-label="Your Email"
               required
@@ -68,6 +92,7 @@ const SignUp = () => {
               icon="lock"
               iconPosition="left"
               name="password"
+              minLength="5"
               placeholder="Password"
               aria-label="Your Password"
               type="password"
@@ -78,14 +103,18 @@ const SignUp = () => {
               icon="lock"
               iconPosition="left"
               name="verifyPassword"
+              minLength="5"
               placeholder="Verify Password"
               aria-label="Verify your password"
               type="password"
               required
             />
-            {/* <Button onClick={(e) => handleSignUp(e)}>Create Account</Button> */}
 
-            <Button style={buttonStyle} animated onClick={(e) => handleSignUp(e)}>
+            <Button
+              style={buttonStyle}
+              animated
+              onClick={(e) => handleSignUp(e)}
+            >
               <Button.Content visible>Create Account</Button.Content>
               <Button.Content hidden>
                 <Icon name="arrow right" />
@@ -93,8 +122,7 @@ const SignUp = () => {
             </Button>
           </Form>
         </ModalInner>
-        {error && <div>{error}</div>}
-        {session && <Navigate replace to="/user/profile" />}
+        {error && <ErrorAlert>{error}</ErrorAlert>}
       </Modal>
     </Container>
   );
@@ -108,8 +136,6 @@ const Container = styled.div`
   margin: 10px;
   height: 100vh;
   width: 100%;
-  background: no-repeat url(https://images.unsplash.com/photo-1598266488814-e458d57cdc0d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHw%3D&w=1000&q=80);
-  background-size: cover;
 `;
 
 const Modal = styled.div`
@@ -139,13 +165,16 @@ const ModalInner = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 12px;
-
 `;
 
-const Form = styled.form`
+const Form = styled.div`
   display: flex;
   flex-direction: column;
   width: 80%;
 `;
 
+const ErrorAlert = styled.div`
+  color: red;
+  text-align: center;
+`;
 export default SignUp;
