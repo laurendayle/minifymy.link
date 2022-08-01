@@ -1,7 +1,7 @@
 const Session = require("../models/Session");
 const bcrypt = require("bcryptjs");
 const Model = require("../models/User");
-// const User = Model.User;
+const { getLinks } = require("../models/Url");
 
 module.exports = {
   // LINK server/models/User.js:29
@@ -23,10 +23,8 @@ module.exports = {
   // LINK server/models/User.js:51
   // LINK client/src/components/auth/Login.jsx:25
   login: async (req, res) => {
-    console.log(req.get('Authorization'), atob('Omxh'), 'req.get');
     let userData = atob(req.get("Authorization").slice(6)).split(":");
     const [ email, password ] = userData;
-    console.log('email', email, 'password', password);
     try {
       const userData = await Model.login({
         email: email,
@@ -42,23 +40,30 @@ module.exports = {
     }
   },
   logout: async (req, res) => {
-    res.clearCookie("minifymy.link");
-    const cookies = req.headers.cookie.split(";");
-    let cookieValue = null;
-    cookies.forEach(element => {
-      if (element.split("=")[0].trim() === "minifymy.link") {
-        cookieValue = decodeURIComponent(element.split("=")[1].trim());
-      }
-    })
-
     try {
-      const document = await Session.destroySession({ where: { session: cookieValue }});
+      res.clearCookie("minifymylink");
+      const document = await Session.destroySession({ where: { session: req.body.token }});
       if (!document) {
-        res.status(500).send(err);
+        res.status(500).send({ message: "Error during logout" });
+      } else {
+        res.status(200).send(document);
       }
-      res.status(200).send(document);
     } catch (err) {
       res.status(500).send(err);
     }
   },
+  getUserData: async (req, res) => {
+    const token = req.get("Authorization");
+    try {
+      const userId = await Session.getSession(token);
+      const data = await getLinks(userId.id);
+      if (data.length) {
+        res.status(200).send(data);
+      } else {
+        res.status(404).send({ message: "Looks like you haven't shortened any links yet! Get started by entering a URL to shorten"});
+      }
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  }
 };

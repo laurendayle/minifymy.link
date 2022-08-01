@@ -25,7 +25,7 @@ const SignUp = () => {
   const [shouldRedirect, setRedirect] = useState(false);
 
   useEffect(() => {
-    console.log(session);
+    console.log(session, 'session');
     console.log(error);
   });
 
@@ -73,6 +73,7 @@ const SignUp = () => {
               icon="at"
               iconPosition="left"
               name="email"
+              type="email"
               placeholder="Email"
               aria-label="Your Email"
               required
@@ -91,6 +92,7 @@ const SignUp = () => {
               icon="lock"
               iconPosition="left"
               name="password"
+              minLength="5"
               placeholder="Password"
               aria-label="Your Password"
               type="password"
@@ -101,6 +103,7 @@ const SignUp = () => {
               icon="lock"
               iconPosition="left"
               name="verifyPassword"
+              minLength="5"
               placeholder="Verify Password"
               aria-label="Verify your password"
               type="password"

@@ -41,9 +41,8 @@ const Login = () => {
     axios
       .get(`${url}/user/login`, { auth: userData, headers: { config } })
       .then((res) => {
-        console.log(res, "res");
         if (res.data.authenticated) {
-          window.localStorage.setItem("minifymylink", res.data.session.token);
+          window.localStorage.setItem("minifymylink", JSON.stringify(res.data.session.token));
           setSession(res.data.session.token);
           navigate("/user/profile");
         } else {

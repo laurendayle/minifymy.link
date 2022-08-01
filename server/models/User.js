@@ -54,7 +54,6 @@ module.exports = {
     console.log(userObj, 'userObj');
     try {
       const user = await User.findOne({ email: userObj.email });
-      console.log(user, 'user');
       if (!user) {
         return {
           user: userObj.email,
@@ -66,7 +65,6 @@ module.exports = {
 
       if (await bcrypt.compare(userObj.password, user.hash)) {
         const cookie = await createSession(user);
-        console.log(cookie, "cookie");
         return {
           user: user.email,
           message: "Authentication successful",

@@ -6,11 +6,16 @@ import { Input, Button, Icon } from "semantic-ui-react";
 import SignOut from "./auth/SignOut";
 import styled from "styled-components";
 
+const config = import.meta.env.VITE_AXIOS_CONFIG;
+const url = import.meta.env.VITE_URL;
+const inputStyle = {
+  width: "60%"
+}
 const buttonStyle = {
   color: "#909090",
   border: "1px solid#909090",
   backgroundColor: "transparent",
-  margin: "5px",
+  margin: "10px",
   width: "50%",
 };
 
@@ -22,9 +27,12 @@ const ShortenURL = () => {
 
   const handleSubmit = (e) => {
     axios
-      .post(URL + "/shortenurl/new", data, config)
-      .then((res) => setShortenedUrl(res.data.shortened_url))
+      .post(`${url}/shortenurl/new`, { url: inputUrl }, { config })
+      .then((res) => {
+        setShortenedUrl(res.data.shortened_url)
+      })
       .catch((err) => {
+        console.log(err, 'err');
         if (err.message) {
           setError(err.message);
         } else {
@@ -35,62 +43,39 @@ const ShortenURL = () => {
 
   return (
     <Container>
-      <Modal>
-        <ModalInner>
-          <Input
-            name="link"
-            label="https://"
-            placeholder="long-website-name.com"
-            required
-            onChange={(e) => setUrl(e.target.value)}
-            value={inputUrl}
-          />
-          <Button style={buttonStyle} animated onClick={(e) => handleSubmit(e)}>
-            <Button.Content visible>Shorten</Button.Content>
-            <Button.Content hidden>
-              <Icon name="cut" />
-            </Button.Content>
-          </Button>
-          <div>{shortenedUrl ? shortenedUrl : ""}</div>
-          {error && <div>{error}</div>}
-        </ModalInner>
-      </Modal>
+      <Input
+        name="url"
+        label="https://"
+        placeholder="long-website-name.com"
+        required
+        onChange={(e) => setUrl(e.target.value)}
+        value={inputUrl}
+        style={inputStyle}
+      />
+      <Button style={buttonStyle} animated onClick={(e) => handleSubmit(e)}>
+        <Button.Content visible>Shorten</Button.Content>
+        <Button.Content hidden>
+          <Icon name="cut" />
+        </Button.Content>
+      </Button>
+      {error && <ErrorAlert>{error}</ErrorAlert>}
+      <div>{shortenedUrl ? shortenedUrl : ""}</div>
     </Container>
   );
 };
 
 const Container = styled.div`
-  height: 60%;
-  width: 60%;
-`;
-
-const Modal = styled.div`
-  background-color: #ffffff88;
+  height: 50%;
+  width: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 12px;
-  height: 100%;
-  width: 100%;
 `;
 
-const StyledHeader = styled.h1`
-  position: relative;
-  font-size: 3em;
-  color: white;
-  font-weight: 400;
-`;
-
-const ModalInner = styled.div`
-  background-color: #ffffffc3;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
-  height: 70%;
-  width: 60%;
+const ErrorAlert = styled.div`
+  color: red;
+  text-align: center;
 `;
 
 export default ShortenURL;

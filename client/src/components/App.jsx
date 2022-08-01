@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import sessionAtom from "../recoil/atoms/sessionAtom";
@@ -11,10 +11,10 @@ const URL = import.meta.env.VITE_URL;
 const config = import.meta.env.VITE_AXIOS_CONFIG;
 
 const App = () => {
+  const navigate = useNavigate();
+
   const [session, setSession] = useRecoilState(sessionAtom);
   const [error, setError] = useState(null);
-
-  console.log(session, "session");
 
   return (
     <>
