@@ -1,50 +1,47 @@
-
-import axios from "axios";
-import sessionAtom from "../../recoil/atoms/sessionAtom";
+import axios from "../../../api/axios";
 import { useState } from "react";
-import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-
-const url = import.meta.env.VITE_URL;
-const config = import.meta.env.VITE_AXIOS_CONFIG;
+import { useAuth } from "../hooks/AuthProvider.jsx";
 
 const SignOut = (props) => {
-
   const navigate = useNavigate();
-
-  const [session, setSession] = useRecoilState(sessionAtom);
+  const { user, logout } = useAuth();
   const [error, setError] = useState(null);
 
-  const handleClick = (e) => {
-    axios.post(`${url}/user/logout`, {token: props.session}, { config })
-      .then(res => {
-        if (res) setSession(null);
-        window.localStorage.removeItem("minifymy.link");
-        navigate("/");
-      })
-      .catch(err => {
-        if (err.message) {
-          setError(err.message);
-        } else {
-          setError({ message: "Something went wrong" });
+  const handleClick = async (e) => {
+    try {
+      const res = await axios.post(
+        "/logout", { ...user }, {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
         }
-      })
-  }
-  return (
-    <div>
-      <StyledButton onClick={(e) => handleClick(e)}>Sign Out</StyledButton>
-    </div>
+      );
+      logout();
+      navigate("/");
+    } catch (err) {
+      if (!err?.message) {
+        setError("No server response");
+      } else if (err?.message) {
+        setError(err.message);
+      } else {
+        setError(null);
+      }
+    }
 
-  )
+  };
+  return <StyledButton onClick={(e) => handleClick(e)}>Sign Out</StyledButton>;
 };
 
 const StyledButton = styled.button`
+  position: relative;
   float: right;
-  border: none;
-  color:#909090;
+  border: 1.5px dotted teal;
+  padding: 7px;
+  border-radius: 5px;
   cursor: pointer;
   background-color: transparent;
+  color: white;
   &:hover {
     color: lightblue;
   }
