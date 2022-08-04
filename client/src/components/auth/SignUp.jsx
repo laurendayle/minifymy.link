@@ -1,13 +1,9 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useContext } from "react";
+import axios from "../../../api/axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
-import { useRecoilState } from "recoil";
-import sessionAtom from "../../recoil/atoms/sessionAtom";
 import { Input, Button, Icon } from "semantic-ui-react";
-
-const URL = import.meta.env.VITE_URL;
-const config = import.meta.env.VITE_AXIOS_CONFIG;
+import { useAuth } from "../hooks/AuthProvider.jsx";
 
 const inputStyle = { margin: "7px" };
 const buttonStyle = {
@@ -18,14 +14,13 @@ const buttonStyle = {
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [userData, setUserData] = useState({});
   const [error, setError] = useState(null);
-  const [session, setSession] = useRecoilState(sessionAtom);
-  const [shouldRedirect, setRedirect] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    console.log(session, 'session');
     console.log(error);
   });
 
@@ -35,31 +30,35 @@ const SignUp = () => {
     setUserData(newState);
   };
 
-  const handleSignUp = (e) => {
-    if (userData.password !== userData.verifyPassword) {
-      setError({ message: "Please ensure the passwords match" });
-    } else {
-      axios({
-        method: "post",
-        data: userData,
-        headers: { config },
-        url: `${URL}/user/signup`,
-      })
-        .then((res) => {
-          if (res.data.authenticated) {
-            window.localStorage.setItem("minifymylink", res.data.session.token);
-            setSession(res.data.session.token);
-            navigate("/user/profile");
-          }
-        })
-        .catch((err) => {
-          if (err.message) {
-            setError(err.message);
-          } else {
-            setError("Unknown error");
-          }
-        });
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+
+    if (!userData.username || !userData.password || !userData.fullName) {
+      setError({ message: "Please fill out all required fields." });
     }
+    try {
+      const res = await axios.post(
+        "/register", userData, {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      const userObj = res.data._doc;
+      delete userObj["password"];
+      await login(userObj);
+      if (res?.data) setSuccess(true);
+      navigate("/auth");
+    } catch (err) {
+      console.log(err, 'err');
+      if (!err?.response) {
+        setError("No server response");
+      } else if (err.response?.status === 409) {
+        setError("Username not available");
+      } else {
+        setError("Failed to create account");
+      }
+    }
+
   };
 
   return (
@@ -72,7 +71,7 @@ const SignUp = () => {
               style={inputStyle}
               icon="at"
               iconPosition="left"
-              name="email"
+              name="username"
               type="email"
               placeholder="Email"
               aria-label="Your Email"
@@ -136,17 +135,21 @@ const Container = styled.div`
   margin: 10px;
   height: 100vh;
   width: 100%;
+
 `;
 
 const Modal = styled.div`
   height: 70%;
   width: 60%;
-  background-color: #ffffff88;
+  background-color: #8ebcbc;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   border-radius: 12px;
+  min-width: 440px;
+  min-height: 360px;
+  max-width: 750px;
 `;
 
 const StyledHeader = styled.h1`
@@ -155,16 +158,19 @@ const StyledHeader = styled.h1`
   font-size: 3em;
   color: white;
   font-weight: 400;
+
 `;
 
 const ModalInner = styled.div`
   height: 60%;
-  background-color: #ffffffc3;
+  background-color: #e6ededb8;
   width: 60%;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 12px;
+  min-width: 270px;
+  min-height: 270px;
 `;
 
 const Form = styled.div`

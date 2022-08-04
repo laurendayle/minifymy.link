@@ -1,58 +1,46 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { Routes, Route, Link } from "react-router-dom";
+import Login from "./auth/Login";
+import Home from "./Home";
+import SignUp from "./auth/SignUp";
+import SignOut from "./auth/SignUp";
+import UserProfile from "./auth/UserProfile";
+import { ProtectedRoute } from "./auth/ProtectedRoute";
+import { useAuth } from "./hooks/AuthProvider.jsx";
+import { DataProvider } from "./hooks/DataProvider.jsx";
 import styled from "styled-components";
-import sessionAtom from "../recoil/atoms/sessionAtom";
-import ShortenURL from "./ShortenURL";
-import SignOut from "./auth/SignOut";
-
-const URL = import.meta.env.VITE_URL;
-const config = import.meta.env.VITE_AXIOS_CONFIG;
+import Nav from "./Nav";
 
 const App = () => {
-  const navigate = useNavigate();
-
-  const [session, setSession] = useRecoilState(sessionAtom);
-  const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   return (
     <>
-      <StyledNav>
-        { session ? <SignOut /> : (
-          <>
-            <StyledLink to="/user/login">Login</StyledLink>
-            <StyledLink to="/user/signup">Sign Up</StyledLink>
-          </>
-        )}
-
-      </StyledNav>
-
-      <Container className="App">
-        <ShortenURL />
-      </Container>
+      <Nav />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/auth" element={<Login />} />
+        <Route path="/register" element={<SignUp />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DataProvider>
+                <UserProfile />
+              </DataProvider>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </>
   );
 };
-const Container = styled.div`
-  background-color: tan;
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-`;
-const StyledNav = styled.nav`
+
+const StyledNav = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-end;
-`;
-
-const StyledLink = styled(Link)`
-  margin: 5px;
-  text-decoration: none;
-  color: #909090;
+  height: 5vh;
+  background-color: darkgray;
 `;
 
 export default App;

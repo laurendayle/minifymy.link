@@ -1,42 +1,43 @@
-const Model = require("../models/Url");
+const Url = require("../models2/Url");
+const User = require("../models2/User");
+const ObjectId = require("mongoose").Types.ObjectId;
 const { getUrlKey } = require("../utils/urlKey");
-const { validateUrl } = require("../utils/validateUrl");
+const { parseJWT } = require("../utils/parseJWT");
 
-const base = process.env.base;
-console.log(base);
+const getNewShortUrl = async (req, res) => {
+  console.log('getNewShortUrl');
+  const urlObj = req.body;
+  try {
+    const url = await Url.findOne({ original_url: urlObj.original_url });
+    if (url) return url;
 
-module.exports = {
-  createShortenedUrl: async (req, res) => {
-    if (validateUrl(req.body.url)) {
-      const original_url = req.body.url,
-        urlKey = getUrlKey(original_url),
-        shortened_url = `${base}${urlKey}`;
+    const urlKey = getUrlKey();
+    urlObj.urlKey = urlKey;
+    urlObj.shortened_url = `minifymy.link/${urlKey}`;
 
-      try {
-        const savedDoc = await Model.createNew({
-          url_id: urlKey,
-          title: req.body.title || "",
-          original_url: original_url,
-          shortened_url: shortened_url,
-          date: new Date(),
-        });
-        if (savedDoc) {
-          res.status(200).send(savedDoc);
-        } else {
-          res.status(500).send({ message: "Something went wrong, try again" });
-        }
+    const decodedJWT = await parseJWT(req.cookies.jwt);
+    const user = await User.find({ username: decodedJWT.username });
+    urlObj["userId"] = user[0].id;
+    const document = new Url(urlObj);
+    await document.save();
+    res.status(201).send(document);
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+}
 
-      } catch (err) {
-        res.status(404).send(err);
-      }
-    } else {
-      res.status(400).send("Invalid URL");
-    }
-  },
-  getShortenedUrl: (req, res) => {
-    const { short_url } = req.params;
-    const document = Model.getOriginalUrl(short_url)
-      .then((originalUrl) => res.redirect(302, "http://" + originalUrl))
-      .catch((err) => res.status(404).send(err));
-  },
-};
+const getOriginalUrl = async (req, res) => {
+  const { urlKey } = req.params;
+
+  try {
+    const url = await Url.find({ urlKey: urlKey });
+    const originalUrl = url.original_url;
+    url.clicks++;
+    url.save();
+    res.redirect(302, `http://${originalUrl}`);
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+}
+
+module.exports = { getNewShortUrl, getOriginalUrl };

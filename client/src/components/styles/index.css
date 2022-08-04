@@ -1,7 +1,7 @@
 @import 'semantic-ui-css/semantic.min.css';
 
 html, body {
-  background-color: tan;
+  background-color: rgb(243, 242, 242);
 }
 
 :root {
