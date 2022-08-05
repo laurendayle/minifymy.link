@@ -1,5 +1,5 @@
-const Url = require("../models2/Url");
-const User = require("../models2/User");
+const Url = require("../models/Url");
+const User = require("../models/User");
 const ObjectId = require("mongoose").Types.ObjectId;
 const { getUrlKey } = require("../utils/urlKey");
 const { parseJWT } = require("../utils/parseJWT");
