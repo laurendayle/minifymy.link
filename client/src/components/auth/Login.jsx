@@ -1,4 +1,4 @@
-import axios from "../../../api/axios";
+import axios from "../../api/axios";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";

@@ -1,9 +1,10 @@
 import { useState, createContext, useContext, useMemo } from "react";
 
-
 const DataContext = createContext({});
+
 const DataProvider = ({ children }) => {
   const [userLinks, setUserLinks] = useState([]);
+
   console.log(userLinks, 'userLinks from data context');
 
   const setLinks = async (links) => setUserLinks(links);

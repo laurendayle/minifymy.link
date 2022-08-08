@@ -1,11 +1,9 @@
-const User = require("../models2/User");
-const Url = require("../models2/Url");
+const User = require("../models/User");
+const Url = require("../models/Url");
 
 const getUserData = async (req, res) => {
-  const cookies = req.cookies;
-  if (!cookies?.jwt) return res.sendStatus(404); // No content
-  const refreshToken = cookies.jwt;
-  console.log(refreshToken, 'refreshToken');
+  const refreshToken = req.get("Authorization");
+  if (!refreshToken) return res.sendStatus(404); // No content
 
   try {
     const foundUser = await User.find({ refreshToken: refreshToken });

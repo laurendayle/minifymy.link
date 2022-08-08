@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from "react";
-import axios from "../../../api/axios";
+import axios from "../../api/axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
 import { Input, Button, Icon } from "semantic-ui-react";
-import { useAuth } from "../hooks/AuthProvider.jsx";
+import { useAuth } from "../hooks/AuthProvider";
 
 const inputStyle = { margin: "7px" };
 const buttonStyle = {

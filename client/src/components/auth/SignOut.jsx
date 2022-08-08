@@ -1,4 +1,4 @@
-import axios from "../../../api/axios";
+import axios from "../../api/axios";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
@@ -34,14 +34,17 @@ const SignOut = (props) => {
 };
 
 const StyledButton = styled.button`
-  position: relative;
-  float: right;
+  position: absolute;
+  top: 50px;
+  left: 1075px;
   border: 1.5px dotted teal;
   padding: 7px;
   border-radius: 5px;
   cursor: pointer;
   background-color: transparent;
   color: white;
+  height: 35px;
+  z-index: 99;
   &:hover {
     color: lightblue;
   }

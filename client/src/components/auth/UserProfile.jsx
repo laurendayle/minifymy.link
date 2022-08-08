@@ -1,13 +1,14 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
-import axios from "../../../api/axios";
+import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import SignOut from "./SignOut";
-import ShortenURL from "../ShortenURL";
-import LinksDisplay from "./LinksDisplay";
-import Metrics from "./Metrics";
+import ShortenURL from "../home/ShortenURL";
+import LinksDisplay from "../auth/LinksDisplay";
+import Metrics from "../auth/Metrics";
+import Modal from "../reusable/Modal";
 import { useAuth } from "../hooks/AuthProvider.jsx";
-import { DataProvider, useDataContext } from "../hooks/DataProvider.jsx";
+import { useDataContext } from "../hooks/DataProvider.jsx";
 
 const UserProfile = (props) => {
   const { user } = useAuth();
@@ -20,10 +21,9 @@ const UserProfile = (props) => {
     const fetchData = async () => {
       try {
         const response = await axios.get("/dashboard", {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+          headers: { "Authorization": user.refreshToken },
         });
-        console.log(response.data, "response from fetchData");
+        console.log(response, "response from fetchData");
         setUserData(response.data);
         setLinks(response.data);
       } catch (err) {
@@ -36,16 +36,19 @@ const UserProfile = (props) => {
         }
       }
     };
-    fetchData();
+
+    if (user) {
+      fetchData();
+    }
   }, []);
 
   return (
     <>
       <Container>
         <Metrics />
-        <ShortenURL />
 
         <LinksDisplay links={userLinks} />
+
       </Container>
     </>
   );

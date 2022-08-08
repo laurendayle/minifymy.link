@@ -1,4 +1,4 @@
-const User = require("../models2/User");
+const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 
 // LINK client/src/components/auth/SignUp.jsx:14

@@ -1,10 +1,10 @@
-const User = require("../models2/User");
+const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
 const handleLogin = async (req, res) => {
-  
+
   const { username, password } = req.body;
 
   if (!username || !password) return res.status(400).send({ message: "Username and password are required" });

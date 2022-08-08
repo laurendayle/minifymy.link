@@ -1,6 +1,6 @@
 import { Routes, Route, Link } from "react-router-dom";
 import Login from "./auth/Login";
-import Home from "./Home";
+import Home from "../components/home/Home";
 import SignUp from "./auth/SignUp";
 import SignOut from "./auth/SignUp";
 import UserProfile from "./auth/UserProfile";
@@ -8,7 +8,7 @@ import { ProtectedRoute } from "./auth/ProtectedRoute";
 import { useAuth } from "./hooks/AuthProvider.jsx";
 import { DataProvider } from "./hooks/DataProvider.jsx";
 import styled from "styled-components";
-import Nav from "./Nav";
+import Nav from "../components/home/Nav";
 
 const App = () => {
   const { user } = useAuth();
@@ -35,12 +35,5 @@ const App = () => {
   );
 };
 
-const StyledNav = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  height: 5vh;
-  background-color: darkgray;
-`;
 
 export default App;
