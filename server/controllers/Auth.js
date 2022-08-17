@@ -26,13 +26,13 @@ const handleLogin = async (req, res) => {
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "30s" }
+        { expiresIn: "1200s" }
       );
 
       const refreshToken = jwt.sign(
         { "username": foundUser[0].username },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: "1d" }
+        { expiresIn: "604800s" }
       );
 
       const updatedUser = await User.findOneAndUpdate({ username: foundUser[0].username }, { refreshToken: refreshToken }, { upsert: true });
@@ -42,8 +42,7 @@ const handleLogin = async (req, res) => {
         sameSite: "None",
         secure: true,
         maxAge: 24 * 60 * 60 * 1000,
-      })
-      res.send({ accessToken, refreshToken, roles, username: foundUser[0].username, id: foundUser[0].id, });
+      }).send({ accessToken });
     } else {
       res.sendStatus(401); // Unauthorized
     }

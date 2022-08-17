@@ -3,64 +3,69 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/AuthProvider";
 import SignOut from "../auth/SignOut";
 import logo from "../../assets/logo.png";
-
+import Help from "../Issues";
 
 const Nav = () => {
   const { user } = useAuth();
   return (
-    <>
+    <Container>
 
-      <Container>
-      <div style={{height: "65px", width: "100px", position: "relative", left: "-430px", top: "-10px"}}>
-        <img src={logo} alt="" width="100%"/>
-      </div>
-
-        <nav>
+        <div style={{display: "flex", justifyContent: "center", width: "85%"}}>
 
           <StyledLink to="/">Home</StyledLink>
-          {/* // FIXME change to correct "How it works" & "Help" path */}
           <StyledLink to="/">How It Works</StyledLink>
-          <StyledLink to="/">Help</StyledLink>
-        </nav>
-        </Container>
-        <AuthLinks>
-        {user ? (
-          <SignOut />
-        ) : (
-          <>
-            <StyledLink to="/auth">Login</StyledLink>
-            <StyledLink to="/register">Sign Up</StyledLink>
-          </>
-        )}
-        </AuthLinks>
+          {user ? <StyledLink to="/dashboard">Dashboard</StyledLink> : null}
 
-    </>
+          <StyledLink to="/issues">Help</StyledLink>
+        </div>
+        <div style={{display: "flex" }}>
+
+          {!user ? (
+            <>
+              <AuthLink to="/auth">Login</AuthLink>
+              <AuthLink to="/register">Sign Up</AuthLink>
+            </>
+          ) : (
+            <SignOut />
+          )}
+
+
+        </div>
+
+    </Container>
   );
 };
 
-const Container = styled.div`
+const Container = styled.nav`
   width: 100%;
   height: 7vh;
   background-color: #8ebcbc;
   display: flex;
-  justify-content: center;
   align-items: center;
-  box-shadow: 0 2px 2px -2px rgba(0,0,0,.2);
+  box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.2);
   position: fixed;
   top: 0;
   z-index: 1;
 `;
 
-const AuthLinks = styled.div`
-  top: -55px;
-  position: relative;
-  margin: 15px;
-`;
-
 const StyledLink = styled(Link)`
-  margin: 15px;
+  margin: 0 10px 0 10px;
   text-decoration: none;
   color: white;
+`;
+
+const AuthLink = styled(Link)`
+  position: relative;
+  float: right;
+  margin: 0 10px 0 10px;
+  text-decoration: none;
+  border: 1px dotted teal;
+  color: white;
+  padding: 7px;
+  height: 35px;
+  min-width: fit-content;
+  border-radius: 5px;
+  cursor: pointer;
 `;
 
 export default Nav;

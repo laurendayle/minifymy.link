@@ -33,7 +33,7 @@ const ClickSchema = new mongoose.Schema({
   },
   timestamp: {
     type: String,
-    default: Date.now,
+    default: Date.now(),
   },
   redirected: {
     type: Boolean,

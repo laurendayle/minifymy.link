@@ -2,7 +2,7 @@ import axios from "../../api/axios";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
-import ShortenURL from "./ShortenURL";
+import ShortenURL from "../reusable/ShortenURL";
 import SignOut from "../auth/SignOut";
 import { useAuth } from "../hooks/AuthProvider";
 import HomeFooter from "../home/HomeFooter";

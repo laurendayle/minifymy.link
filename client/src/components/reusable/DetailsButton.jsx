@@ -4,7 +4,7 @@ import { Input, Button, Icon, Form, Label } from "semantic-ui-react";
 
 const DetailsButton = (props) => {
   const [buttonState, setButtonState] = useState(false);
-  const [error, setError] = useState(true);
+  const [error, setError] = useState(false);
 
   return (
     <Form>
@@ -24,12 +24,12 @@ const DetailsButton = (props) => {
             <Input
               type="text"
               style={inputStyle}
-              name={props.name}
+              name={props.label}
               placeholder={props.name}
               onChange={(e) => props.handleInputChange(e)}
             />
             {error ? (
-              <Label style={labelStyle} pointing="above">That backhalf is taken!</Label>
+              <Label style={labelStyle} pointing="above">{error.message}</Label>
             ) : null}
           </ShowHide>
         ) : (
@@ -48,11 +48,11 @@ const Container = styled.div`
   height: 15vh;
 `;
 
-
 const ShowHide = styled.div`
   display: flex;
   justify-content: center;
 `;
+
 const buttonStyle = {
   minWidth: "200px",
   paddingTop: "8px",
@@ -77,6 +77,6 @@ const labelStyle = {
   backgroundColor: "teal",
   width: "fit-content",
   color: "white",
-  boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px;"
+  boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px"
 }
 export default DetailsButton;

@@ -1,69 +1,89 @@
-import { Icon, Label, Menu, Table, Input, Button } from "semantic-ui-react";
+import {
+  Icon,
+  Label,
+  Menu,
+  Table,
+  Input,
+  Button,
+  Pagination,
+} from "semantic-ui-react";
+import axios from "../../api/axios";
 import { useState } from "react";
 import styled from "styled-components";
-import ShortenURL from "../home/ShortenURL";
-import Modal from "../reusable/Modal";
+import ShortenURL from "../reusable/ShortenURL";
 import { InputProvider } from "../hooks/InputProvider";
+import LinkRow from "./LinkRow";
+import { useDataContext } from "../hooks/DataProvider.jsx";
+import { useAuth } from "../hooks/AuthProvider.jsx";
 
-const LinksDisplay = ({ links }) => {
+const LinksDisplay = (props) => {
+  const { user } = useAuth();
+  const { userLinks, setLinks } = useDataContext();
+  const [error, setError] = useState(null);
 
-  const [showModal, setShowModal] = useState(false);
+  const handleEditSubmit = async () => {
+    try {
+      const response = await axios.get("/dashboard", {
+        headers: { "Authorization": `Bearer ${user.accessToken}` }
+      });
+      await setLinks(response?.data);
+    } catch (err) {
+      console.log(err, 'err from LinksDisplay handleEditSubmit');
+    }
+  };
 
   return (
     <TableContainer>
-      <InputProvider>
-        <div style={{display: "flex", justifyContent: "space-between"}}>
-          <Input icon="search" placeholder="Search URLs"/>
-          {showModal ? <Modal setShowModal={setShowModal} children={<ShortenURL />} /> : <></>}
-          {!showModal ? <StyledButton onClick={() => setShowModal(!showModal)}>+</StyledButton> : ""}
-        </div>
-      </InputProvider>
-      <Table singleLine size="small" compact textAlign="center" verticalAlign="middle">
+      <Table
+        singleLine
+        size="small"
+        compact="very"
+        textAlign="center"
+        verticalAlign="middle"
+        selectable={true}
+      >
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Title</Table.HeaderCell>
             <Table.HeaderCell>Original URL</Table.HeaderCell>
             <Table.HeaderCell>Shortened URL</Table.HeaderCell>
             <Table.HeaderCell>Clicks</Table.HeaderCell>
+            <Table.HeaderCell></Table.HeaderCell>
           </Table.Row>
         </Table.Header>
-        <Table.Body textAlign="center">
-          {links?.length ? links.map((link) => (
-            <Table.Row>
-              <Table.Cell>{link.title ? link.title : "--"}</Table.Cell>
-              <Table.Cell>{link.original_url}</Table.Cell>
-              <Table.Cell>{link.shortened_url}</Table.Cell>
-              <Table.Cell>{link.clicks}</Table.Cell>
-            </Table.Row>
-          )) : null}
+        <Table.Body>
+          {userLinks?.links?.docs.length
+            ? userLinks.links.docs.map((link) => (
+                <LinkRow
+
+                  key={JSON.stringify(link)}
+                  link={link}
+                  handleEdit={handleEditSubmit}
+                />
+              ))
+            : null}
         </Table.Body>
-        <Table.Footer>
-          <Table.Row>
-            <Table.HeaderCell colSpan="4">
-              <Menu floated="right" pagination>
-                <Menu.Item as="a" icon>
-                  <Icon name="chevron left" size="small" />
-                </Menu.Item>
-                <Menu.Item as="a">1</Menu.Item>
-                <Menu.Item as="a" icon>
-                  <Icon name="chevron right" size="small" />
-                </Menu.Item>
-              </Menu>
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Footer>
+        <Pagination
+          defaultActivePage={1}
+          totalPages={10}
+          firstItem={null}
+          lastItem={null}
+          pointing
+          secondary
+        />
       </Table>
     </TableContainer>
   );
 };
 
 const TableContainer = styled.div`
-  width: 60%;
+  width: 50vw;
   background-color: #8ebcbc;
   padding: 15px;
   border-radius: 5px;
   z-index: 0;
 `;
+
 
 const StyledButton = styled.button`
   width: 50px;
@@ -75,6 +95,15 @@ const StyledButton = styled.button`
   font-weight: 900;
   color: white;
   transition: all 0.25s ease;
+`;
+
+const StyledIcon = styled(Icon)`
+  color: gray;
+  margin: 3px;
+  &:hover {
+    color: red;
+    zoom: 1.1;
+  }
 `;
 
 export default LinksDisplay;

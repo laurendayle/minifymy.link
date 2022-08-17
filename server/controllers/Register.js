@@ -21,7 +21,7 @@ const handleNewUser = async (req, res) => {
     };
     const document = new User(newUser);
     await document.save();
-    res.status(201).send({ success: `New user ${username} created`, ...document});
+    res.status(201).send({ success: `New user ${username} created`});
   } catch (err) {
     res.status(500).send({ message: err.message });
   }

@@ -3,12 +3,13 @@ import styled from "styled-components";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import SignOut from "./SignOut";
-import ShortenURL from "../home/ShortenURL";
+import ShortenURL from "../reusable/ShortenURL";
 import LinksDisplay from "../auth/LinksDisplay";
 import Metrics from "../auth/Metrics";
 import Modal from "../reusable/Modal";
 import { useAuth } from "../hooks/AuthProvider.jsx";
 import { useDataContext } from "../hooks/DataProvider.jsx";
+import { InputProvider } from "../hooks/InputProvider";
 
 const UserProfile = (props) => {
   const { user } = useAuth();
@@ -21,18 +22,18 @@ const UserProfile = (props) => {
     const fetchData = async () => {
       try {
         const response = await axios.get("/dashboard", {
-          headers: { "Authorization": user.refreshToken },
+          headers: { "Authorization": `Bearer ${user.accessToken}` }
         });
         console.log(response, "response from fetchData");
-        setUserData(response.data);
-        setLinks(response.data);
+        setUserData(response?.data);
+        await setLinks(response?.data);
       } catch (err) {
         if (!err?.response) {
           setError("No server response");
         } else if (err?.message) {
           setError(err.message);
         } else {
-          setError(err);
+          setError("Something went wrong");
         }
       }
     };
@@ -43,14 +44,17 @@ const UserProfile = (props) => {
   }, []);
 
   return (
-    <>
-      <Container>
-        <Metrics />
-
-        <LinksDisplay links={userLinks} />
-
-      </Container>
-    </>
+    <Container>
+      <InputProvider>
+        <ShortenURL />
+      </InputProvider>
+      <Metrics
+        oneMonthClicks={userLinks?.oneMonthClicks || "--"}
+        oneWeekClicks={userLinks?.oneWeekClicks || "--"}
+        totalClicks={userLinks?.links?.totalClicks || "--"}
+      />
+      <LinksDisplay />
+    </Container>
   );
 };
 

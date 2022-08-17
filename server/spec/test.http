@@ -1,22 +1,37 @@
 POST http://localhost:3000/register HTTP/1.1
 content-type: application/json
 
-{
-  "fullName": "Nevada Allen",
-  "username": "n.johannah@gmail.com",
+{"fullName": "Nevada Allen",
+  "username": "n.johannah123@gmail.com",
   "password": "nevada",
-  "verifyPassword": "nevada",
-}
+  "verifyPassword": "nevada"}
 
 ###
 
-GET http://localhost:3000/dashboard
+POST http://localhost:3000/auth HTTP/1.1
+content-type: application/json
+
+{
+  "username": "laurendayle@gmail.com",
+  "password": "lauren",
+}
+###
+
+GET http://localhost:3000/dashboard HTTP/1.1
 content-type: application/json
 Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6eyJ1c2VybmFtZSI6ImxhdXJlbkBnbWFpbC5jb20iLCJyb2xlcyI6WzE2MF19LCJpYXQiOjE2NTk2NDY1MzgsImV4cCI6MTY1OTY0NjU2OH0._ZFsw8SrRSM-yDYcycejUatUB0rjxN6Xgd5-hkk2MQ8
 
 ###
 
-GET http://localhost:3000/shorten/pQcWWwcqzgB
+GET http://localhost:3000/shorten/lovelife
 content-type: application/json
 
+###
+DELETE http://localhost:3000/shorten
+content-type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6eyJ1c2VybmFtZSI6ImxhdXJlbkBnbWFpbC5jb20iLCJyb2xlcyI6WzE2MF19LCJpYXQiOjE2NjA2MDIxMTcsImV4cCI6MTY2MDYwMzMxN30.Hfnw9O7-Ysdr8i-K_xTC8Czkqb7kQKK-GXLMeCkUyIo
+
+{
+  url: "/drwkdTfGcgG"
+}
 
