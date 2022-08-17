@@ -1,16 +1,9 @@
 import { useState, useEffect, useContext } from "react";
-import axios from "../../../api/axios";
+import axios from "../../api/axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
-import { Input, Button, Icon } from "semantic-ui-react";
-import { useAuth } from "../hooks/AuthProvider.jsx";
-
-const inputStyle = { margin: "7px" };
-const buttonStyle = {
-  color: "#909090",
-  border: "1px solid#909090",
-  backgroundColor: "transparent",
-};
+import { Input, Button, Icon, Form } from "semantic-ui-react";
+import { useAuth } from "../hooks/AuthProvider";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -18,7 +11,6 @@ const SignUp = () => {
 
   const [userData, setUserData] = useState({});
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     console.log(error);
@@ -37,28 +29,13 @@ const SignUp = () => {
       setError({ message: "Please fill out all required fields." });
     }
     try {
-      const res = await axios.post(
-        "/register", userData, {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-      const userObj = res.data._doc;
-      delete userObj["password"];
-      await login(userObj);
-      if (res?.data) setSuccess(true);
+      const res = await axios.post("/register", userData);
       navigate("/auth");
     } catch (err) {
       console.log(err, 'err');
-      if (!err?.response) {
-        setError("No server response");
-      } else if (err.response?.status === 409) {
-        setError("Username not available");
-      } else {
-        setError("Failed to create account");
-      }
+      if (err.message) setError(err.message);
+      else setError("Something went wrong. Please try again.")
     }
-
   };
 
   return (
@@ -66,8 +43,9 @@ const SignUp = () => {
       <Modal>
         <StyledHeader>Create an Account</StyledHeader>
         <ModalInner>
-          <Form onChange={(e) => handleInputChange(e)}>
-            <Input
+          <StyledForm onChange={(e) => handleInputChange(e)}>
+
+            <Form.Input
               style={inputStyle}
               icon="at"
               iconPosition="left"
@@ -77,7 +55,7 @@ const SignUp = () => {
               aria-label="Your Email"
               required
             />
-            <Input
+            <Form.Input
               style={inputStyle}
               icon="user outline"
               iconPosition="left"
@@ -119,7 +97,7 @@ const SignUp = () => {
                 <Icon name="arrow right" />
               </Button.Content>
             </Button>
-          </Form>
+          </StyledForm>
         </ModalInner>
         {error && <ErrorAlert>{error}</ErrorAlert>}
       </Modal>
@@ -173,7 +151,7 @@ const ModalInner = styled.div`
   min-height: 270px;
 `;
 
-const Form = styled.div`
+const StyledForm = styled(Form)`
   display: flex;
   flex-direction: column;
   width: 80%;
@@ -183,4 +161,13 @@ const ErrorAlert = styled.div`
   color: red;
   text-align: center;
 `;
+
+const inputStyle = { margin: "7px" };
+
+const buttonStyle = {
+  color: "#909090",
+  border: "1px solid#909090",
+  backgroundColor: "transparent",
+};
+
 export default SignUp;

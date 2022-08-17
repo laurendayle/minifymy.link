@@ -1,13 +1,15 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
-import axios from "../../../api/axios";
+import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import SignOut from "./SignOut";
-import ShortenURL from "../ShortenURL";
-import LinksDisplay from "./LinksDisplay";
-import Metrics from "./Metrics";
+import ShortenURL from "../reusable/ShortenURL";
+import LinksDisplay from "../auth/LinksDisplay";
+import Metrics from "../auth/Metrics";
+import Modal from "../reusable/Modal";
 import { useAuth } from "../hooks/AuthProvider.jsx";
-import { DataProvider, useDataContext } from "../hooks/DataProvider.jsx";
+import { useDataContext } from "../hooks/DataProvider.jsx";
+import { InputProvider } from "../hooks/InputProvider";
 
 const UserProfile = (props) => {
   const { user } = useAuth();
@@ -20,34 +22,39 @@ const UserProfile = (props) => {
     const fetchData = async () => {
       try {
         const response = await axios.get("/dashboard", {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+          headers: { "Authorization": `Bearer ${user.accessToken}` }
         });
-        console.log(response.data, "response from fetchData");
-        setUserData(response.data);
-        setLinks(response.data);
+        console.log(response, "response from fetchData");
+        setUserData(response?.data);
+        await setLinks(response?.data);
       } catch (err) {
         if (!err?.response) {
           setError("No server response");
         } else if (err?.message) {
           setError(err.message);
         } else {
-          setError(err);
+          setError("Something went wrong");
         }
       }
     };
-    fetchData();
+
+    if (user) {
+      fetchData();
+    }
   }, []);
 
   return (
-    <>
-      <Container>
-        <Metrics />
+    <Container>
+      <InputProvider>
         <ShortenURL />
-
-        <LinksDisplay links={userLinks} />
-      </Container>
-    </>
+      </InputProvider>
+      <Metrics
+        oneMonthClicks={userLinks?.oneMonthClicks || "--"}
+        oneWeekClicks={userLinks?.oneWeekClicks || "--"}
+        totalClicks={userLinks?.links?.totalClicks || "--"}
+      />
+      <LinksDisplay />
+    </Container>
   );
 };
 

@@ -17,7 +17,10 @@
   "license": "UNLICENSED",
   "dependencies": {
     "axios": "^0.27.2",
+    "axios-auth-refresh": "^3.3.3",
     "dotenv": "^16.0.1",
+    "just-validate": "^3.8.1",
+    "mem": "^9.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",

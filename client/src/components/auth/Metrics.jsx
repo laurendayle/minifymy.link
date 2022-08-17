@@ -1,22 +1,34 @@
 import styled from "styled-components";
-import MetricsItem from "./MetricsItem";
+import { Statistic, Card } from "semantic-ui-react";
+import sumClicks from "../../utils/sumClicks";
 
-const MetricsDisplay = () => {
-
+const Metrics = (props) => {
+  console.log(props, "props");
 
   return (
     <Container>
-      <MetricsItem />
-    </Container>
-  )
-}
 
+      <Statistic color="teal" size="large">
+        <Statistic.Value>{sumClicks(props.oneMonthClicks)}</Statistic.Value>
+        <Statistic.Label>7 Day Clicks</Statistic.Label>
+      </Statistic>
+
+      <Statistic color="teal" size="large">
+        <Statistic.Value>{sumClicks(props?.oneMonthClicks)}</Statistic.Value>
+        <Statistic.Label>30 Day Clicks</Statistic.Label>
+      </Statistic>
+
+      <Statistic color="teal" size="large">
+        <Statistic.Value>{props.totalClicks}</Statistic.Value>
+        <Statistic.Label>Total Clicks</Statistic.Label>
+      </Statistic>
+
+    </Container>
+  );
+};
 const Container = styled.div`
-  width: 60%;
-  min-width: 60%;
-  min-height: 20vh;
-  height: 20vh;
-  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-evenly;
 `;
 
-export default MetricsDisplay;
+export default Metrics;

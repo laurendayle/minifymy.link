@@ -1,4 +1,4 @@
-import axios from "../../../api/axios";
+import axios from "../../api/axios";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
@@ -33,13 +33,9 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/auth", userData, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
+      const res = await axios.post("/auth", userData);
       const accessToken = res?.data?.accessToken;
-      const roles = res?.data?.roles;
-      await login({ username: userData.username, accessToken, roles, refreshToken: res.data.refreshToken, id: res.data.id});
+      await login({ accessToken });
       navigate("/dashboard");
     } catch (err) {
       if (!err?.response) {

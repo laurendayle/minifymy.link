@@ -1,8 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-const { createSession } = require("./Session");
-const { validatePassword } = require("../utils/validatePassword");
-
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
@@ -10,83 +6,27 @@ const UserSchema = new Schema({
     type: String,
     default: "",
   },
-  hash: {
+  password: {
     type: String,
     default: "",
     required: true,
   },
-  email: {
+  username: {
     type: String,
     default: "",
     required: true,
     unique: true,
   },
+  roles: {
+    type: Schema.Types.Mixed,
+    default: { User: 0240 },
+  },
+  refreshToken: {
+    type: String,
+    default: "",
+  }
 });
 
 const User = mongoose.model("User", UserSchema);
 
-module.exports = {
-  // LINK server/controllers/User.js:8
-  // LINK client/src/components/auth/SignUp.jsx:
-  createNewUser: async (userObj) => {
-    try {
-      const user = new User(userObj);
-      await user.save();
-      const cookie = await createSession(user);
-      return {
-        user: user.email,
-        message: "Account creation successful",
-        authenticated: true,
-        session: cookie,
-      };
-    } catch (err) {
-      return {
-        user: userObj.email,
-        message: "Error creating account" + err,
-        authenticated: false,
-        session: null,
-      };
-    }
-  },
-  // LINK server/controllers/User.js:24
-  // LINK client/src/components/auth/Login.jsx:25
-  login: async (userObj) => {
-    console.log(userObj, 'userObj');
-    try {
-      const user = await User.findOne({ email: userObj.email });
-      if (!user) {
-        return {
-          user: userObj.email,
-          message: "No user exists with that email",
-          authenticated: false,
-          session: null,
-        };
-      }
-
-      if (await bcrypt.compare(userObj.password, user.hash)) {
-        const cookie = await createSession(user);
-        return {
-          user: user.email,
-          message: "Authentication successful",
-          authenticated: true,
-          session: cookie,
-        };
-      } else {
-        return {
-          user: userObj.email,
-          message: "Incorrect password",
-          authenticated: false,
-          session: null,
-        };
-      }
-    } catch (err) {
-      return {
-        user: user.email,
-        message: "An error occured during login: " + err,
-        authenticated: false,
-        session: null,
-      };
-    }
-  },
-  User: User,
-};
+module.exports = User;

@@ -1,25 +1,27 @@
-const User = require("../models2/User");
-
+const User = require("../models/User");
+const { parseJWT } = require("../utils/parseJWT");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const handleRefreshToken = async (req, res) => {
-  console.log(req.cookies, 'req.cookies');
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.sendStatus(401);
   const refreshToken = cookies.jwt;
+  let foundUser;
 
   try {
-    const foundUser = await User.find({ refreshToken: refreshToken });
+    foundUser = await User.find({ refreshToken: refreshToken });
+
     if (!foundUser.length) return res.sendStatus(403); // Forbidden
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+
+  jwt.verify(foundUser[0]?.refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
     if (err || foundUser[0].username !== decoded.username) {
       return res.sendStatus(403);
     }
-    const roles = Object.values(foundUser[0].roles);
+    const roles = Object.values(foundUser[0]?.roles);
     const accessToken = jwt.sign(
       {
         UserInfo: {

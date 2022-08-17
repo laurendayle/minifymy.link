@@ -7,6 +7,7 @@ const corsOptions = require("./config/corsOptions");
 const errorHandler = require("./middleware/errorHandler");
 const { logger } = require("./middleware/logEvents");
 const verifyJWT = require("./middleware/verifyJWT");
+const verifyRoles = require("./middleware/verifyRoles");
 const credentials = require("./middleware/credentials");
 require("dotenv").config();
 const connectDB = require("./database/index").connect;
@@ -31,10 +32,14 @@ app.use("/auth", require("./routes/Auth"));
 app.use("/refresh", require("./routes/Refresh"));
 app.use("/logout", require("./routes/Logout"));
 app.use("/shorten", require("./routes/Url"));
-app.use("/dashboard", require("./routes/user"));
 
 app.use(verifyJWT);
+
+app.use("/dashboard", require("./routes/user"));
+app.use(verifyRoles);
 // app.use("/admin", require("./routes/api/admin"));
+
+
 
 app.all("*", (req, res) => {
   res.status(404);
