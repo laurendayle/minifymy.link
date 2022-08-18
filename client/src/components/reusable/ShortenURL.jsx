@@ -85,7 +85,9 @@ const ShortenURL = (props) => {
 };
 
 const Container = styled.div`
-  height: 45vh;
+  position: relative;
+  top: 35px;
+  height: 35vh;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -127,6 +129,7 @@ const Details = styled.div`
   padding-top: 0px;
   min-width: 450px;
   max-width: 620px;
+  height: 11vh;
 `;
 
 const ErrorAlert = styled.div`

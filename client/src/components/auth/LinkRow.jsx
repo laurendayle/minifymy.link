@@ -16,7 +16,6 @@ const LinkRow = (props) => {
 
   const [userInput, setUserInput] = useState({});
   const [editRow, setEditRow] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
   const handleChange = (e) => {
@@ -33,7 +32,7 @@ const LinkRow = (props) => {
       const response = await axios.put("/shorten", userInput);
       if (response?.status === 201) {
         setEditRow(false);
-        props.handleEdit();
+        props.handleUrlChange();
       }
     } catch (err) {
       setError(err?.message);
@@ -41,19 +40,18 @@ const LinkRow = (props) => {
   };
 
   const handleDelete = async (e) => {
-    console.log(e.target.id, 'e.target.id');
     try {
-      const response = await axios.delete("/shorten", { data: { urlKey: e.target.id }});
-      console.log(response.data, 'response.data from handleDelete');
-      props.handleEdit();
+      const response = await axios.delete("/shorten", {
+        data: { urlKey: e.target.id },
+      });
+      props.handleUrlChange();
     } catch (err) {
-      console.log(err, 'err from handleDelete');
+      setError(err?.message);
     }
-  }
-
+  };
 
   return (
-    <Table.Row style={{width: "100px"}}>
+    <Table.Row style={{ width: "100px" }}>
       <Table.Cell width={1}>
         {editRow === link.urlKey ? (
           <>
@@ -87,29 +85,27 @@ const LinkRow = (props) => {
       <Table.Cell>{link.shortened_url}</Table.Cell>
       <Table.Cell>{link.clicks}</Table.Cell>
       <Table.Cell>
-        <div style={{ height: "2vh", width: "2vw" }}>
-          {!editRow ? (
-            <StyledIcon
-              color="grey"
-              name="pencil"
-              id={link.urlKey}
-              onClick={() => setEditRow(link.urlKey)}
-            />
-          ) : (
-            <StyledIcon
-              name="save"
-              color="green"
-              size="large"
-              id={link.urlKey}
-              onClick={(e) => handleEdit(e)}
-            />
-          )}
+        {!editRow ? (
           <StyledIcon
-            name="trash"
+            color="grey"
+            name="pencil"
             id={link.urlKey}
-            onClick={(e) => handleDelete(e)}
+            onClick={() => setEditRow(link.urlKey)}
           />
-        </div>
+        ) : (
+          <StyledIcon
+            name="save"
+            color="green"
+            size="large"
+            id={link.urlKey}
+            onClick={(e) => handleEdit(e)}
+          />
+        )}
+        <StyledIcon
+          name="trash"
+          id={link.urlKey}
+          onClick={(e) => handleDelete(e)}
+        />
       </Table.Cell>
     </Table.Row>
   );

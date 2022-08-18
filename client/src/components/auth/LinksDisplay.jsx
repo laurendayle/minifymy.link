@@ -1,14 +1,17 @@
 import {
   Icon,
   Label,
-  Menu,
   Table,
+  Menu,
   Input,
   Button,
   Pagination,
+  Dimmer,
+  Loader
 } from "semantic-ui-react";
+import Metrics from "../auth/Metrics";
 import axios from "../../api/axios";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import styled from "styled-components";
 import ShortenURL from "../reusable/ShortenURL";
 import { InputProvider } from "../hooks/InputProvider";
@@ -20,11 +23,26 @@ const LinksDisplay = (props) => {
   const { user } = useAuth();
   const { userLinks, setLinks } = useDataContext();
   const [error, setError] = useState(null);
+  const [activePage, setActivePage] = useState(1);
 
-  const handleEditSubmit = async () => {
+  const handlePageChange = async (e, data) => {
+    try {
+      const response = axios.get("/dashboard", {
+        headers: { "Authorization": `Bearer ${user?.accessToken}`},
+        params: { page: data?.activePage},
+      });
+      await setLinks(response?.data);
+    } catch (err) {
+      setError(err?.message);
+    }
+  }
+
+
+  const handleUrlChange = async () => {
     try {
       const response = await axios.get("/dashboard", {
-        headers: { "Authorization": `Bearer ${user.accessToken}` }
+        headers: { "Authorization": `Bearer ${user.accessToken}` },
+        params: { page: data?.activePage },
       });
       await setLinks(response?.data);
     } catch (err) {
@@ -34,6 +52,10 @@ const LinksDisplay = (props) => {
 
   return (
     <TableContainer>
+      <Metrics
+        oneMonthClicks={userLinks?.oneMonthClicks || "--"}
+        oneWeekClicks={userLinks?.oneWeekClicks || "--"}
+      />
       <Table
         singleLine
         size="small"
@@ -44,46 +66,46 @@ const LinksDisplay = (props) => {
       >
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>Title</Table.HeaderCell>
-            <Table.HeaderCell>Original URL</Table.HeaderCell>
-            <Table.HeaderCell>Shortened URL</Table.HeaderCell>
-            <Table.HeaderCell>Clicks</Table.HeaderCell>
-            <Table.HeaderCell></Table.HeaderCell>
+            {["Title", "Original URL", "Shortened URL", "Clicks", ""].map(header => (
+              <Table.HeaderCell key={header}>{header}</Table.HeaderCell>
+            ))}
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {userLinks?.links?.docs.length
-            ? userLinks.links.docs.map((link) => (
+          {userLinks?.links?.length
+            ? userLinks.links.map((link) => (
                 <LinkRow
-
                   key={JSON.stringify(link)}
                   link={link}
-                  handleEdit={handleEditSubmit}
+                  handleUrlChange={handleUrlChange}
                 />
               ))
             : null}
         </Table.Body>
-        <Pagination
-          defaultActivePage={1}
-          totalPages={10}
-          firstItem={null}
-          lastItem={null}
-          pointing
-          secondary
-        />
       </Table>
+        <Pagination
+          activePage={activePage}
+          onPageChange={(e, data) => handlePageChange(e, data)}
+          secondary
+          totalPages={userLinks?.totalPages}
+          ellipsisItem={null}
+        />
     </TableContainer>
   );
 };
 
 const TableContainer = styled.div`
-  width: 50vw;
+  position: relative;
+  top: 50px;
+  width: 60%;
   background-color: #8ebcbc;
   padding: 15px;
   border-radius: 5px;
   z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
-
 
 const StyledButton = styled.button`
   width: 50px;

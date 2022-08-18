@@ -5,11 +5,12 @@ import { useNavigate } from "react-router-dom";
 import SignOut from "./SignOut";
 import ShortenURL from "../reusable/ShortenURL";
 import LinksDisplay from "../auth/LinksDisplay";
-import Metrics from "../auth/Metrics";
+
 import Modal from "../reusable/Modal";
 import { useAuth } from "../hooks/AuthProvider.jsx";
 import { useDataContext } from "../hooks/DataProvider.jsx";
 import { InputProvider } from "../hooks/InputProvider";
+import { Dimmer, Loader } from "semantic-ui-react";
 
 const UserProfile = (props) => {
   const { user } = useAuth();
@@ -17,9 +18,11 @@ const UserProfile = (props) => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [userData, setUserData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await axios.get("/dashboard", {
           headers: { "Authorization": `Bearer ${user.accessToken}` }
@@ -27,14 +30,9 @@ const UserProfile = (props) => {
         console.log(response, "response from fetchData");
         setUserData(response?.data);
         await setLinks(response?.data);
+        setLoading(false);
       } catch (err) {
-        if (!err?.response) {
-          setError("No server response");
-        } else if (err?.message) {
-          setError(err.message);
-        } else {
-          setError("Something went wrong");
-        }
+        setError(err?.message);
       }
     };
 
@@ -48,11 +46,6 @@ const UserProfile = (props) => {
       <InputProvider>
         <ShortenURL />
       </InputProvider>
-      <Metrics
-        oneMonthClicks={userLinks?.oneMonthClicks || "--"}
-        oneWeekClicks={userLinks?.oneWeekClicks || "--"}
-        totalClicks={userLinks?.links?.totalClicks || "--"}
-      />
       <LinksDisplay />
     </Container>
   );

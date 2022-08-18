@@ -1,15 +1,16 @@
 import styled from "styled-components";
 import { Statistic, Card } from "semantic-ui-react";
-import sumClicks from "../../utils/sumClicks";
+import { sumClicks, getTotalClicks } from "../../utils/clickUtils";
+import { useDataContext } from "../hooks/DataProvider.jsx";
 
 const Metrics = (props) => {
-  console.log(props, "props");
+  const { userLinks } = useDataContext();
 
   return (
-    <Container>
 
+    <Container>
       <Statistic color="teal" size="large">
-        <Statistic.Value>{sumClicks(props.oneMonthClicks)}</Statistic.Value>
+        <Statistic.Value>{sumClicks(props?.oneMonthClicks)}</Statistic.Value>
         <Statistic.Label>7 Day Clicks</Statistic.Label>
       </Statistic>
 
@@ -18,10 +19,11 @@ const Metrics = (props) => {
         <Statistic.Label>30 Day Clicks</Statistic.Label>
       </Statistic>
 
-      <Statistic color="teal" size="large">
-        <Statistic.Value>{props.totalClicks}</Statistic.Value>
+      // TODO total clicks causes crash on initial load
+      {/* <Statistic color="teal" size="large">
+        <Statistic.Value>{getTotalClicks(userLinks?.links)}</Statistic.Value>
         <Statistic.Label>Total Clicks</Statistic.Label>
-      </Statistic>
+      </Statistic> */}
 
     </Container>
   );
