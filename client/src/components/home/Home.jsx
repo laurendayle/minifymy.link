@@ -16,7 +16,6 @@ const Home = () => {
   const [error, setError] = useState(null);
 
   return (
-
     <Container className="App">
       <InputProvider>
         <ShortenURL />
@@ -28,14 +27,9 @@ const Home = () => {
 };
 
 const Container = styled.div`
-  // height: auto;
-  // width: 100%;
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: center;
-  // align-items: center;
-  // position: relative;
-  /* top: 30px; */
+  position: relative;
+  left: 5%;
+  
 `;
 
 export default Home;

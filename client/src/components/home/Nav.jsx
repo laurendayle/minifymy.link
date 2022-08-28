@@ -41,8 +41,6 @@ const Nav = () => {
         Settings
       </TempLink>
 
-
-
       <TempLink>
         <Icon name="linkify" />
         Links
@@ -88,7 +86,7 @@ const Nav = () => {
 
 const Container = styled.div`
   height: 100%;
-  background-color: darkgray;
+  background-color: #0B132B;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -96,7 +94,7 @@ const Container = styled.div`
 `;
 
 const TempLink = styled.div`
-  color: #0E6EB8;
+  color: #3A506B;
   margin: 20px 10px 0 10px;
 
   &.top {

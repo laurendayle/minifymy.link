@@ -2,7 +2,7 @@ import axios from "../../api/axios";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-import { Input, Button, Icon } from "semantic-ui-react";
+import { Input, Button, Icon, Form } from "semantic-ui-react";
 import { useAuth } from "../hooks/AuthProvider.jsx";
 
 const Login = () => {
@@ -15,7 +15,7 @@ const Login = () => {
   };
 
   const navigate = useNavigate();
-  const { login }= useAuth();
+  const { login } = useAuth();
 
   const [userData, setUserData] = useState({});
   const [error, setError] = useState(null);
@@ -51,108 +51,137 @@ const Login = () => {
   };
 
   return (
-    <>
-      <Container onChange={(e) => handleInputChange(e)}>
-        <Modal>
-          <StyledHeader>Log In</StyledHeader>
-          <ModalInner>
-            <Form>
-              <Input
-                defaultValue={userData.email || ""}
-                style={inputStyle}
-                icon="at"
-                iconPosition="left"
-                name="username"
-                type="email"
-                placeholder="Email"
-                aria-label="Your email"
-                required
-              />
-              <Input
-                defaultValue={userData.password || ""}
-                style={inputStyle}
-                icon="lock"
-                iconPosition="left"
-                name="password"
-                placeholder="Password"
-                type="password"
-                aria-label="Your password"
-                required
-              />
+    // <Container onChange={(e) => handleInputChange(e)}>
+    //   <StyledForm>
+    //     <Input
+    //       defaultValue={userData.email || ""}
+    //       style={inputStyle}
+    //       icon="at"
+    //       iconPosition="left"
+    //       name="username"
+    //       type="email"
+    //       placeholder="Email"
+    //       aria-label="Your email"
+    //       required
+    //     />
+    //     <Input
+    //       defaultValue={userData.password || ""}
+    //       style={inputStyle}
+    //       icon="lock"
+    //       iconPosition="left"
+    //       name="password"
+    //       placeholder="Password"
+    //       type="password"
+    //       aria-label="Your password"
+    //       required
+    //     />
 
-              <Button
-                style={buttonStyle}
-                animated
-                onClick={(e) => handleLogin(e)}
-              >
-                <Button.Content visible>Log In</Button.Content>
-                <Button.Content hidden>
-                  <Icon name="arrow right" />
-                </Button.Content>
-              </Button>
+    //     <Button
+    //       style={buttonStyle}
+    //       animated
+    //       onClick={(e) => handleLogin(e)}
+    //     >
+    //       <Button.Content visible>Log In</Button.Content>
+    //       <Button.Content hidden>
+    //         <Icon name="arrow right" />
+    //       </Button.Content>
+    //     </Button>
 
-              <Button
-                style={buttonStyle}
-                animated
-                onClick={() => navigate("/register")}
-              >
-                <Button.Content visible>Create An Account</Button.Content>
-                <Button.Content hidden>
-                  <Icon name="arrow right" />
-                </Button.Content>
-              </Button>
-              {error && <ErrorAlert>{error}</ErrorAlert>}
-            </Form>
-          </ModalInner>
-        </Modal>
-      </Container>
-    </>
+    //     <Button
+    //       style={buttonStyle}
+    //       animated
+    //       onClick={() => navigate("/register")}
+    //     >
+    //       <Button.Content visible>Create An Account</Button.Content>
+    //       <Button.Content hidden>
+    //         <Icon name="arrow right" />
+    //       </Button.Content>
+    //     </Button>
+    //     {error && <ErrorAlert>{error}</ErrorAlert>}
+    //   </StyledForm>
+    //   <div style={{ borderLeft: "2px dotted gray", color: "white", width: "100%" }}>
+    //     <span>Here's how it works!</span>
+    //   </div>
+    // </Container>
+
+    <Container onChange={(e) => handleInputChange(e)}>
+      <Card>
+        <h1>Login</h1>
+        <StyledForm>
+          <Form.Field>
+            <Input
+              defaultValue={userData.email || ""}
+              style={inputStyle}
+              icon="at"
+              iconPosition="left"
+              name="username"
+              type="email"
+              placeholder="Email Address"
+              aria-label="Your email address"
+              required
+            />
+          </Form.Field>
+
+          <Form.Field>
+            <Input
+              defaultValue={userData.password || ""}
+              style={inputStyle}
+              icon="lock"
+              iconPosition="left"
+              name="password"
+              placeholder="Password"
+              type="password"
+              aria-label="Your password"
+              required
+            />
+          </Form.Field>
+
+          <Button
+            style={buttonStyle}
+            animated
+            onClick={(e) => handleLogin(e)}
+          >
+            <Button.Content visible>Log In</Button.Content>
+            <Button.Content hidden>
+              <Icon name="arrow right" />
+            </Button.Content>
+          </Button>
+
+        <p>
+          Don't have an account yet?
+          <a href="/register"> Create one here</a>
+        </p>
+        </StyledForm>
+
+      </Card>
+    </Container>
   );
 };
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 10px;
-  height: 100vh;
+  height: auto;
   width: 100%;
-`;
-
-const Modal = styled.div`
-  height: 70%;
-  width: 60%;
-  background-color: #8ebcbc;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
-`;
-
-const StyledHeader = styled.h1`
+  justify-content: space-evenly;
+  align-content: center;
   position: relative;
-  top: -15px;
-  font-size: 3em;
-  color: white;
-  font-weight: 400;
+  top: 25vh;
 `;
 
-const ModalInner = styled.div`
-  height: 60%;
-  background-color: #e6ededb8;
-  width: 60%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
+const StyledForm = styled(Form)`
+  width: 50%;
+  text-align: center;
 `;
 
-const Form = styled.div`
+const Card = styled.div`
+  background-color: lightgray;
+  width: 70%;
+  height: 50vh;
   display: flex;
   flex-direction: column;
-  width: 80%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
 `;
 
 const ErrorAlert = styled.div`
