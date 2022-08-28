@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import SignOut from "./SignOut";
 import ShortenURL from "../reusable/ShortenURL";
 import LinksDisplay from "../auth/LinksDisplay";
-
 import Modal from "../reusable/Modal";
 import { useAuth } from "../hooks/AuthProvider.jsx";
 import { useDataContext } from "../hooks/DataProvider.jsx";
