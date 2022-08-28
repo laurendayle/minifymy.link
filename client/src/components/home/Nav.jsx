@@ -1,71 +1,124 @@
 import styled from "styled-components";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/AuthProvider";
 import SignOut from "../auth/SignOut";
+import ShortenURL from "../reusable/ShortenURL";
 import logo from "../../assets/logo.png";
 import Help from "../Issues";
+import { Icon } from "semantic-ui-react";
 
 const Nav = () => {
   const { user } = useAuth();
+
+  const [modalDisplay, setModalDisplay] = useState(false);
+
+
   return (
     <Container>
 
-        <div style={{display: "flex", justifyContent: "center", width: "85%"}}>
 
-          <StyledLink to="/">Home</StyledLink>
-          <StyledLink to="/">How It Works</StyledLink>
-          {user ? <StyledLink to="/dashboard">Dashboard</StyledLink> : null}
+      <StyledLink to="/"><Icon name="home" />Home</StyledLink>
 
-          <StyledLink to="/issues">Help</StyledLink>
+
+
+      {user ? <StyledLink to="/dashboard"><Icon name="dashboard" />Dashboard</StyledLink> : null}
+
+      <TempLink
+        onClick={(e) => setModalDisplay(!modalDisplay)}
+      >
+        <Icon name="plus" />
+        Add Short Link
+      </TempLink>
+
+      <TempLink>
+        <Icon name="history" />
+        Link History
+      </TempLink>
+
+      <TempLink className="top">
+        <Icon name="setting" />
+        Settings
+      </TempLink>
+
+
+
+      <TempLink>
+        <Icon name="linkify" />
+        Links
+      </TempLink>
+
+      <TempLink className="right">
+        Archived Links
+      </TempLink>
+
+      <TempLink className="right">
+        Expired Links
+      </TempLink>
+
+      <TempLink className="right">
+        Branded Domain
+      </TempLink>
+
+      {modalDisplay &&
+
+        <div style={{ position: "absolute", left: "25vw" }}>
+          <ShortenURL />
         </div>
-        <div style={{display: "flex" }}>
 
-          {!user ? (
-            <>
-              <AuthLink to="/auth">Login</AuthLink>
-              <AuthLink to="/register">Sign Up</AuthLink>
-            </>
-          ) : (
-            <SignOut />
-          )}
+      }
+
+      <StyledLink className="bottom" to="/issues">Help</StyledLink>
+
+      {!user ? (
+        <>
+          <AuthLink className="bottom" to="/register">Sign Up</AuthLink>
+          <AuthLink className="bottom" to="/auth">Login</AuthLink>
+
+        </>
+      ) : (
+        <SignOut className="bottom"/>
+      )}
 
 
-        </div>
 
     </Container>
   );
 };
 
-const Container = styled.nav`
-  width: 100%;
-  height: 7vh;
-  background-color: #8ebcbc;
+const Container = styled.div`
+  height: 100%;
+  background-color: darkgray;
   display: flex;
-  align-items: center;
-  box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.2);
-  position: fixed;
-  top: 0;
-  z-index: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px;
 `;
 
+const TempLink = styled.div`
+  color: #0E6EB8;
+  margin: 20px 10px 0 10px;
+
+  &.top {
+    margin-top: 50px;
+  }
+
+  &.right {
+    position: relative;
+    left: 20px;
+    font-size: 90%;
+  }
+
+`;
+
+
 const StyledLink = styled(Link)`
-  margin: 0 10px 0 10px;
-  text-decoration: none;
-  color: white;
+
+  margin: 20px 10px 0 10px;
 `;
 
 const AuthLink = styled(Link)`
-  position: relative;
-  float: right;
-  margin: 0 10px 0 10px;
-  text-decoration: none;
-  border: 1px dotted teal;
-  color: white;
-  padding: 7px;
-  height: 35px;
-  min-width: fit-content;
-  border-radius: 5px;
-  cursor: pointer;
+  margin: 20px 10px 0 10px;
 `;
 
 export default Nav;

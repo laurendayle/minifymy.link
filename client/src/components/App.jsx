@@ -1,4 +1,6 @@
 import { Routes, Route, Link } from "react-router-dom";
+import { Sidebar, Icon } from "semantic-ui-react";
+import { useState } from "react";
 import Login from "./auth/Login";
 import Home from "../components/home/Home";
 import SignUp from "./auth/SignUp";
@@ -14,9 +16,28 @@ import Issues from "./Issues";
 const App = () => {
   const { user } = useAuth();
 
+  const [displayNav, setDisplayNav] = useState(false);
+
   return (
-    <>
-      <Nav />
+
+      <Container>
+
+        <Icon name="home"
+          onMouseEnter={() => setDisplayNav(!displayNav)}
+        />
+
+        <Sidebar
+          onHide={() => setDisplayNav(false)}
+          visible={displayNav}
+          vertical
+          animation="overlay"
+          width="thin"
+          onMouseLeave={() => setDisplayNav(false)}
+        >
+          <Nav />
+        </Sidebar>
+
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<Login />} />
@@ -41,8 +62,13 @@ const App = () => {
           }
         />
       </Routes>
-    </>
+      </Container>
   );
 };
+
+const Container = styled.div`
+  height: 100vh;
+  width: 100%;
+`;
 
 export default App;
