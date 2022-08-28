@@ -7,4 +7,11 @@ const sumClicks = (clicksArray) => {
   }, 0);
 }
 
-export default sumClicks;
+const getTotalClicks = (links) => {
+  console.log(links, 'links');
+  return links.reduce((sum, link) => {
+    return sum += link.clicks;
+  }, 0);
+}
+
+export { sumClicks, getTotalClicks };
