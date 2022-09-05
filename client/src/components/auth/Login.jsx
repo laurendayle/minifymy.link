@@ -2,20 +2,13 @@ import axios from "../../api/axios";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-import { Input, Button, Icon } from "semantic-ui-react";
+import {  Icon, Form } from "semantic-ui-react";
 import { useAuth } from "../hooks/AuthProvider.jsx";
-
 const Login = () => {
-  const inputStyle = { margin: "7px" };
-  const buttonStyle = {
-    color: "#909090",
-    border: "1px solid#909090",
-    backgroundColor: "transparent",
-    margin: "5px",
-  };
+
 
   const navigate = useNavigate();
-  const { login }= useAuth();
+  const { login } = useAuth();
 
   const [userData, setUserData] = useState({});
   const [error, setError] = useState(null);
@@ -53,24 +46,46 @@ const Login = () => {
   return (
     <>
       <Container onChange={(e) => handleInputChange(e)}>
-        <Modal>
-          <StyledHeader>Log In</StyledHeader>
-          <ModalInner>
-            <Form>
-              <Input
-                defaultValue={userData.email || ""}
+        <Card>
+
+          <Headers>
+            <Spans> Welcome back! </Spans>
+
+            <Spans className="login">Login</Spans>
+          </Headers>
+
+
+          <OAuth>
+            <span>or continue with</span>
+            <Icons>
+              <Icon name="facebook" size="big" />
+              <Icon name="apple" size="big" />
+              <Icon name="google" size="big" />
+            </Icons>
+          </OAuth>
+
+          <StyledForm>
+            <Form.Field>
+              <label for="username">Enter your email address</label>
+              <Form.Input
                 style={inputStyle}
+                defaultValue={userData.email || ""}
                 icon="at"
                 iconPosition="left"
                 name="username"
                 type="email"
-                placeholder="Email"
-                aria-label="Your email"
+                placeholder="Email Address"
+                aria-label="Your email address"
                 required
               />
-              <Input
-                defaultValue={userData.password || ""}
+
+            </Form.Field>
+
+            <Form.Field>
+              <label for="password">Enter your password</label>
+              <Form.Input
                 style={inputStyle}
+                defaultValue={userData.password || ""}
                 icon="lock"
                 iconPosition="left"
                 name="password"
@@ -80,84 +95,97 @@ const Login = () => {
                 required
               />
 
-              <Button
-                style={buttonStyle}
-                animated
-                onClick={(e) => handleLogin(e)}
-              >
-                <Button.Content visible>Log In</Button.Content>
-                <Button.Content hidden>
-                  <Icon name="arrow right" />
-                </Button.Content>
-              </Button>
+            </Form.Field>
 
-              <Button
-                style={buttonStyle}
-                animated
-                onClick={() => navigate("/register")}
-              >
-                <Button.Content visible>Create An Account</Button.Content>
-                <Button.Content hidden>
-                  <Icon name="arrow right" />
-                </Button.Content>
-              </Button>
-              {error && <ErrorAlert>{error}</ErrorAlert>}
-            </Form>
-          </ModalInner>
-        </Modal>
+            <Button
+              onClick={(e) => handleLogin(e)}
+            >Log In</Button>
+
+          </StyledForm>
+
+        </Card>
       </Container>
     </>
   );
 };
 
 const Container = styled.div`
+  height: 100vh;
+  width: 100%;
+  margin-left: 5vw;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 10px;
-  height: 100vh;
+`;
+
+const StyledForm = styled(Form)`
   width: 100%;
 `;
 
-const Modal = styled.div`
-  height: 70%;
-  width: 60%;
-  background-color: #8ebcbc;
+const Card = styled.div`
+  border: 1px solid #50A08D;
+  width: 40vw;
+  height: 80vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
+  justify-content: space-evenly;
+  border-radius: 20px;
+  background-color: rgba(19, 78, 72, 0.1);
+  padding: 3vw;
 `;
 
-const StyledHeader = styled.h1`
-  position: relative;
-  top: -15px;
-  font-size: 3em;
+const Spans = styled.span`
+  margin-top: 4vh;
+  font-size: 1.3em;
+
+  &.login {
+    font-size: 3em;
+  }
+`;
+
+const Headers = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const OAuth = styled.p`
+  height: 10vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const Icons = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+`;
+
+const Button = styled.button`
   color: white;
-  font-weight: 400;
-`;
+  background-color: #50A08D;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  width: 12vw;
+  border-radius: 8px;
+  font-family: inherit;
+  padding: 1vh;
+  border: 1px solid #50A08D;
 
-const ModalInner = styled.div`
-  height: 60%;
-  background-color: #e6ededb8;
-  width: 60%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
 `;
+const inputStyle = {
+  width: "90%",
+  marginTop: "1vh",
+ };
 
-const Form = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-`;
-
-const ErrorAlert = styled.div`
-  color: red;
-  text-align: center;
-`;
+const buttonStyle = {
+  color: "white",
+  backgroundColor: "#50A08D",
+  display: "inline-flex",
+  justifySelf: "flex-end",
+  boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+  width: "12vw",
+  borderRadius: "12px",
+};
 
 export default Login;

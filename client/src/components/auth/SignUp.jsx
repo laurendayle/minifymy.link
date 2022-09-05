@@ -2,10 +2,10 @@ import { useState, useEffect, useContext } from "react";
 import axios from "../../api/axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
-import { Input, Button, Icon, Form } from "semantic-ui-react";
+import { Button, Icon, Form, Placeholder } from "semantic-ui-react";
 import { useAuth } from "../hooks/AuthProvider";
 
-const SignUp = () => {
+const SignUp = (props) => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -39,135 +39,142 @@ const SignUp = () => {
   };
 
   return (
-    <Container>
-      <Modal>
-        <StyledHeader>Create an Account</StyledHeader>
-        <ModalInner>
-          <StyledForm onChange={(e) => handleInputChange(e)}>
+    <Container >
+    <Modal>
 
-            <Form.Input
-              style={inputStyle}
-              icon="at"
-              iconPosition="left"
-              name="username"
-              type="email"
-              placeholder="Email"
-              aria-label="Your Email"
-              required
-            />
-            <Form.Input
-              style={inputStyle}
-              icon="user outline"
-              iconPosition="left"
-              name="fullName"
-              placeholder="Full Name"
-              aria-label="Your First and Last Name"
-              required
-            />
-            <Input
-              style={inputStyle}
-              icon="lock"
-              iconPosition="left"
-              name="password"
-              minLength="5"
-              placeholder="Password"
-              aria-label="Your Password"
-              type="password"
-              required
-            />
-            <Input
-              style={inputStyle}
-              icon="lock"
-              iconPosition="left"
-              name="verifyPassword"
-              minLength="5"
-              placeholder="Verify Password"
-              aria-label="Verify your password"
-              type="password"
-              required
-            />
+        <StyledForm onChange={(e) => handleInputChange(e)}>
+        <StyledHeader>Sign Up</StyledHeader>
+          <Form.Input
+            icon="at"
+            iconPosition="left"
+            name="username"
+            type="email"
+            placeholder="Email"
+            aria-label="Your Email"
+            required
+          />
+          <Form.Input
+            icon="user outline"
+            iconPosition="left"
+            name="fullName"
+            placeholder="Full Name"
+            aria-label="Your First and Last Name"
+            required
+            type="text"
+          />
+          <Form.Input
+            icon="lock"
+            iconPosition="left"
+            name="password"
+            minLength="5"
+            placeholder="Password"
+            aria-label="Your Password"
+            type="password"
+            required
+          />
+          <Form.Input
+            icon="lock"
+            iconPosition="left"
+            name="verifyPassword"
+            minLength="5"
+            placeholder="Verify Password"
+            aria-label="Verify your password"
+            type="password"
+            required
+          />
 
-            <Button
-              style={buttonStyle}
-              animated
-              onClick={(e) => handleSignUp(e)}
-            >
-              <Button.Content visible>Create Account</Button.Content>
-              <Button.Content hidden>
-                <Icon name="arrow right" />
-              </Button.Content>
-            </Button>
-          </StyledForm>
-        </ModalInner>
-        {error && <ErrorAlert>{error}</ErrorAlert>}
-      </Modal>
-    </Container>
+          <Button
+            style={buttonStyle}
+            animated
+            onClick={(e) => handleSignUp(e)}
+          >
+            <Button.Content visible>Sign Up</Button.Content>
+            <Button.Content hidden>
+              <Icon name="arrow right" />
+            </Button.Content>
+          </Button>
+
+          <p>
+            <span>Already have an account?</span>
+            <a href="/auth"> Log in</a>
+          </p>
+
+        </StyledForm>
+
+        <div style={{width: "50%", borderLeft: "1.8px dashed black", padding: "25px", display: "flex", flexDirection: "column", justifyContent: "space-evenly", alignItems: "center"}}>
+          <h3>Here's how it works!</h3>
+        <div style={{border: "1px solid black", borderRadius: "15px", height: "80%", width: "100%"}}>
+          <img style={{borderRadius: "15px", height: "100%", width: "100%" }} src="https://isminc-public-assets.s3.amazonaws.com/2021-06/default-video-image_0.png"/>
+        </div>
+
+        </div>
+
+      {error && <ErrorAlert>{error}</ErrorAlert>}
+    </Modal>
+  </Container>
   );
 };
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 10px;
   height: 100vh;
   width: 100%;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url(../../assets/login-bg.png);
 `;
 
 const Modal = styled.div`
-  height: 70%;
-  width: 60%;
-  background-color: #8ebcbc;
+  height: 55%;
+  width: 80%;
+  border-radius: 15px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
-  min-width: 440px;
-  min-height: 360px;
-  max-width: 750px;
+  border: 1px solid black;
+  min-width: fit-content;
+  min-height: 415px;
 `;
 
 const StyledHeader = styled.h1`
-  position: relative;
-  top: -15px;
-  font-size: 3em;
-  color: white;
-  font-weight: 400;
+  // position: relative;
+  // top: -15px;
+  // font-size: 3em;
+  // color: white;
+  // font-weight: 400;
 
 `;
 
 const ModalInner = styled.div`
-  height: 60%;
-  background-color: #e6ededb8;
-  width: 60%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
-  min-width: 270px;
-  min-height: 270px;
+  // height: 60%;
+  // background-color: #e6ededb8;
+  // width: 60%;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  // border-radius: 12px;
+  // min-width: 270px;
+  // min-height: 270px;
 `;
 
 const StyledForm = styled(Form)`
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-`;
-
-const ErrorAlert = styled.div`
-  color: red;
+  // display: flex;
+  // flex-direction: column;
+  // width: 80%;
+  padding: 25px;
+  width: 50%;
   text-align: center;
 `;
 
-const inputStyle = { margin: "7px" };
+const ErrorAlert = styled.div`
+  // color: red;
+  // text-align: center;
+`;
+
+
+const inputStyle = { margin: "0px" };
 
 const buttonStyle = {
-  color: "#909090",
-  border: "1px solid#909090",
-  backgroundColor: "transparent",
+  color: "white",
+  backgroundColor: "#5BC0BE",
 };
 
 export default SignUp;

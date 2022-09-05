@@ -9,7 +9,7 @@ import Modal from "../reusable/Modal";
 import { useAuth } from "../hooks/AuthProvider.jsx";
 import { useDataContext } from "../hooks/DataProvider.jsx";
 import { InputProvider } from "../hooks/InputProvider";
-import { Dimmer, Loader } from "semantic-ui-react";
+import MetricsGrid from "./MetricsGrid";
 
 const UserProfile = (props) => {
   const { user } = useAuth();
@@ -42,10 +42,23 @@ const UserProfile = (props) => {
 
   return (
     <Container>
-      <InputProvider>
+      <Card
+      >
+      <Header>
+        <span>Overview</span>
+        <span>Referrers</span>
+        <span>Locations</span>
+        <span>Languages</span>
+        <span>Devices</span>
+        <span>Platforms</span>
+      </Header>
+
+      {/* <InputProvider>
         <ShortenURL />
-      </InputProvider>
+      </InputProvider> */}
+      <MetricsGrid/>
       <LinksDisplay />
+      </Card>
     </Container>
   );
 };
@@ -53,9 +66,32 @@ const UserProfile = (props) => {
 const Container = styled.div`
   height: 100%;
   width: 100%;
+  margin-left: 3vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3vh;
+`;
+
+const Header = styled.div`
+  height: 5vh;
+  margin-bottom: 2vh;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border-radius: 15px 15px 0 0;
+  width: 100%;
+  background-color: white;
+`;
+
+const Card = styled.div`
+  height: 90%;
+  width: 85%;
+  border-radius: 15px;
+  background-color: lightgray;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  margin-top: 5vh;
   align-items: center;
 `;
 

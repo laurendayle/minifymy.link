@@ -52,10 +52,10 @@ const LinksDisplay = (props) => {
 
   return (
     <TableContainer>
-      <Metrics
+      {/* <Metrics
         oneMonthClicks={userLinks?.oneMonthClicks || "--"}
         oneWeekClicks={userLinks?.oneWeekClicks || "--"}
-      />
+      /> */}
       <Table
         singleLine
         size="small"
@@ -66,7 +66,7 @@ const LinksDisplay = (props) => {
       >
         <Table.Header>
           <Table.Row>
-            {["Title", "Original URL", "Shortened URL", "Clicks", ""].map(header => (
+            {["Title", "Original URL", "Shortened URL", "Total Clicks", ""].map(header => (
               <Table.HeaderCell key={header}>{header}</Table.HeaderCell>
             ))}
           </Table.Row>
@@ -95,10 +95,7 @@ const LinksDisplay = (props) => {
 };
 
 const TableContainer = styled.div`
-  position: relative;
-  top: 50px;
-  width: 60%;
-  background-color: #8ebcbc;
+  width: 100%;
   padding: 15px;
   border-radius: 5px;
   z-index: 0;

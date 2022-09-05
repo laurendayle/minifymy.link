@@ -2,6 +2,7 @@
   "name": "minifymy.link-client",
   "version": "1.0.0",
   "description": "A URL shortener client",
+  "type": "module",
   "scripts": {
     "start": "vite --host 0.0.0.0 --port 3005",
     "build": "vite build",
@@ -16,6 +17,7 @@
   "author": "Lauren Anderson",
   "license": "UNLICENSED",
   "dependencies": {
+    "@tanstack/react-table": "^8.5.11",
     "axios": "^0.27.2",
     "axios-auth-refresh": "^3.3.3",
     "dotenv": "^16.0.1",

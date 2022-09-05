@@ -5,6 +5,7 @@ import SignOut from "../auth/SignOut";
 import logo from "../../assets/logo.png";
 import Help from "../Issues";
 
+
 const Nav = () => {
   const { user } = useAuth();
   return (
@@ -48,24 +49,60 @@ const Container = styled.nav`
   z-index: 1;
 `;
 
-const StyledLink = styled(Link)`
-  margin: 0 10px 0 10px;
-  text-decoration: none;
+// const StyledLink = styled(Link)`
+//   margin: 0 10px 0 10px;
+//   text-decoration: none;
+//   color: white;
+// `;
+
+// const AuthLink = styled(Link)`
+//   position: relative;
+//   float: right;
+//   margin: 0 10px 0 10px;
+//   text-decoration: none;
+//   border: 1px dotted teal;
+//   color: white;
+//   padding: 7px;
+//   height: 35px;
+//   min-width: fit-content;
+//   border-radius: 5px;
+//   cursor: pointer;
+
+const TempLink = styled.div`
   color: white;
+  margin: 20px 10px 0 10px;
+
+  &.top {
+    margin-top: 50px;
+  }
+
+  &.right {
+    position: relative;
+    left: 20px;
+    font-size: 90%;
+  }
+
+  &:hover {
+    color:#5BC0BE;
+  }
+`;
+
+
+const StyledLink = styled(Link)`
+  color: white;
+  margin: 20px 10px 0 10px;
+  &:hover {
+    color:#5BC0BE;
+  }
 `;
 
 const AuthLink = styled(Link)`
-  position: relative;
-  float: right;
-  margin: 0 10px 0 10px;
-  text-decoration: none;
-  border: 1px dotted teal;
   color: white;
-  padding: 7px;
-  height: 35px;
-  min-width: fit-content;
-  border-radius: 5px;
-  cursor: pointer;
+  &:hover {
+    color:#5BC0BE;
+  }
+  margin: 20px 10px 0 10px;
+
 `;
 
 export default Nav;

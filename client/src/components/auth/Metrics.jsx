@@ -9,12 +9,12 @@ const Metrics = (props) => {
   return (
 
     <Container>
-      <Statistic color="teal" size="large">
+      <Statistic size="large">
         <Statistic.Value>{sumClicks(props?.oneMonthClicks)}</Statistic.Value>
         <Statistic.Label>7 Day Clicks</Statistic.Label>
       </Statistic>
 
-      <Statistic color="teal" size="large">
+      <Statistic  size="large">
         <Statistic.Value>{sumClicks(props?.oneMonthClicks)}</Statistic.Value>
         <Statistic.Label>30 Day Clicks</Statistic.Label>
       </Statistic>
